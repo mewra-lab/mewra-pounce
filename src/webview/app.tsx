@@ -99,8 +99,8 @@ export function App({ vscode, logoUri }: Props) {
   const isLeaf = callerNodes.length === 0;
 
   return (
-    <div class="pounce-root">
-      {/* MARK: Clean Toolbar */}
+    <div class={`pounce-root ${selectedNode ? "has-inspector" : ""}`}>
+      {/* MARK: Clean Header */}
       <header class="pounce-header">
         <div class="pounce-header-top">
           <div class="pounce-brand">
@@ -193,10 +193,29 @@ export function App({ vscode, logoUri }: Props) {
           vscode={vscode}
         />
 
-        {/* Selected Node Details Bar */}
+        {/* Docked Inspector Bottom Bar */}
         {selectedNode && (
           <div class="pounce-inspector">
             <div class="pounce-inspector-info">
+              <span
+                class={`pounce-inspector-badge pounce-badge--${
+                  selectedNode.id === rootId
+                    ? "target"
+                    : selectedNode.isEntryPoint
+                      ? (selectedNode.entryPointType ?? "route")
+                      : selectedNode.isTestFile
+                        ? "test"
+                        : "caller"
+                }`}
+              >
+                {selectedNode.id === rootId
+                  ? "TARGET"
+                  : selectedNode.isEntryPoint
+                    ? (selectedNode.entryPointType ?? "ROUTE").toUpperCase()
+                    : selectedNode.isTestFile
+                      ? "TEST"
+                      : "CALLER"}
+              </span>
               <span class="pounce-inspector-name">
                 {selectedNode.symbolName}
               </span>
@@ -216,10 +235,11 @@ export function App({ vscode, logoUri }: Props) {
                   })
                 }
               >
-                Open ↗
+                Open in Editor ↗
               </button>
               <button
                 class="pounce-btn pounce-btn--sm"
+                title="Close"
                 onClick={() => setSelectedNode(null)}
               >
                 ✕
@@ -229,7 +249,7 @@ export function App({ vscode, logoUri }: Props) {
         )}
 
         {/* Legend */}
-        <div class="pounce-legend">
+        <div class={`pounce-legend ${selectedNode ? "is-elevated" : ""}`}>
           <span>
             <span class="pounce-dot pounce-dot--root" /> Target
           </span>
@@ -295,11 +315,15 @@ function GraphView({
         else if (isEntry && n.entryPointType === "worker") kind = "worker";
         else if (isTest) kind = "test";
 
+        const shortFile = n.filePath.split("/").pop() ?? "";
+        const label = isRoot
+          ? `${n.symbolName}()\n${shortFile}:${n.line + 1}`
+          : `${n.symbolName}\n${shortFile}:${n.line + 1}`;
+
         return {
           data: {
             id: n.id,
-            label: n.symbolName,
-            sublabel: `${n.filePath.split("/").pop()}:${n.line + 1}`,
+            label,
             kind,
             raw: n,
           },
@@ -321,8 +345,8 @@ function GraphView({
       layout: {
         name: "dagre",
         rankDir: "TB",
-        nodeSep: 40,
-        rankSep: 60,
+        nodeSep: 45,
+        rankSep: 65,
       } as cytoscape.LayoutOptions,
       style: [
         {
@@ -333,15 +357,14 @@ function GraphView({
             "border-color": "#3b4261",
             "border-width": 1.5,
             color: "#cad3f5",
-            "font-size": 11,
-            "font-weight": "normal",
+            "font-size": 10.5,
             "font-family": "var(--vscode-font-family, sans-serif)",
             "text-valign": "center",
             "text-halign": "center",
-            "text-wrap": "ellipsis",
-            "text-max-width": "150px",
-            width: 160,
-            height: 40,
+            "text-wrap": "wrap",
+            "text-max-width": "165px",
+            width: 175,
+            height: 44,
             shape: "roundrectangle",
           },
         },
@@ -440,6 +463,7 @@ function GraphView({
     <div class="pounce-graph-viewport">
       <div ref={containerRef} class="pounce-cy-mount" />
 
+      {/* Floating Canvas Controls at Top Right */}
       <div class="pounce-hud">
         <button
           class="pounce-hud-btn"
@@ -461,12 +485,31 @@ function GraphView({
         </button>
         <button
           class="pounce-hud-btn"
-          title="Fit view"
+          title="Fit to view"
           onClick={() => {
             if (cyRef.current) cyRef.current.fit(undefined, 30);
           }}
         >
           ⛶
+        </button>
+        <button
+          class="pounce-hud-btn"
+          title="Reset layout"
+          onClick={() => {
+            if (cyRef.current) {
+              cyRef.current
+                .layout({
+                  name: "dagre",
+                  rankDir: "TB",
+                  nodeSep: 45,
+                  rankSep: 65,
+                } as cytoscape.LayoutOptions)
+                .run();
+              cyRef.current.fit(undefined, 30);
+            }
+          }}
+        >
+          ↺
         </button>
       </div>
     </div>
