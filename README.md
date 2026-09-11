@@ -124,7 +124,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for the full guide.
 **Quick start:**
 
 ```bash
-git clone https://github.com/mewra/pounce
+git clone https://github.com/mewra-lab/mewra-pounce.git
 cd mewra-pounce
 pnpm install
 pnpm build

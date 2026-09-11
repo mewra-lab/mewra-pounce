@@ -20,7 +20,7 @@ Read these first:
 ## 2. Local setup
 
 ```bash
-git clone https://github.com/mewra/pounce
+git clone https://github.com/mewra-lab/mewra-pounce.git
 cd mewra-pounce
 pnpm install
 pnpm build
