@@ -100,7 +100,14 @@ ext install mewra.pounce
 | **NestJS**               | Files ending in `.controller.ts` / `.resolver.ts` / `.gateway.ts` |
 | **Next.js App Router**   | `route.ts` files exporting `GET`/`POST`/…                         |
 | **Next.js Pages Router** | `pages/api/**/*.ts` exporting `default`                           |
-| **Workers & Cron Jobs**  | BullMQ, Inngest, `*.worker.ts`, `*.cron.ts`, `@Cron` handlers     |
+| **Workers & Cron Jobs**  | BullMQ, Inngest, Celery, `*.worker.*`, `*.cron.*`, `@Cron`        |
+| **FastAPI (Python)**     | `@app.get/post/...`, `@router.*`, `routers/`, `endpoints/`        |
+| **Flask (Python)**       | `@app.route`, `@bp.route`, blueprints, views                      |
+| **Django (Python)**      | `urls.py` patterns, `views.py` `View` / `ViewSet` / `APIView`     |
+| **Gin (Go)**             | `router.GET/POST/...`, `group.*`, handlers with `*gin.Context`    |
+| **Echo (Go)**            | `e.GET/POST/...`, `g.*`, handlers with `echo.Context`             |
+| **Chi (Go)**             | `r.Get/Post/...`, `r.Route`, `r.Mount`                            |
+| **Standard net/http**    | `http.HandleFunc`, `http.Handle`, `ServeHTTP`                     |
 
 ---
 
@@ -160,13 +167,12 @@ pnpm 12.3.4
 
 ## Roadmap
 
-| Version          | Scope                                                                                      |
-| ---------------- | ------------------------------------------------------------------------------------------ |
-| **v1 (current)** | TypeScript/JavaScript + Express/Fastify/NestJS/Next.js, Mermaid export, Cytoscape.js graph |
-| **v1.1**         | Smarter cache invalidation, full keyboard graph navigation                                 |
-| **v2**           | Go (Gin/Echo) and Python (FastAPI/Flask) support                                           |
-| **v2.1**         | Integration with Mewra core (`moondi` tracing/observability)                               |
-| **v3**           | Cross-repo tracing for monorepos                                                           |
+| Version          | Scope                                                                                         |
+| ---------------- | --------------------------------------------------------------------------------------------- |
+| **v1**           | TypeScript/JavaScript + Express/Fastify/NestJS/Next.js, Mermaid export, Cytoscape.js graph    |
+| **v2 (current)** | Multi-language expansion: Python (FastAPI/Flask/Django/Celery) and Go (Gin/Echo/Chi/net/http) |
+| **v2.1**         | Integration with Mewra core (`moondi` tracing/observability), smarter cache invalidation      |
+| **v3**           | Cross-repo tracing for monorepos                                                              |
 
 ---
 

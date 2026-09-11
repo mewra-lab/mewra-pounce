@@ -10,6 +10,10 @@ export const expressAdapter: FrameworkAdapter = {
   detect(target: HierarchyTarget): EntryPointMatch | null {
     const { filePath, symbolName } = target;
 
+    if (filePath.endsWith(".go") || filePath.endsWith(".py")) {
+      return null;
+    }
+
     const methodMatch = symbolName.match(ROUTE_METHOD_PATTERN);
     if (methodMatch) {
       const method = methodMatch[1]?.toUpperCase();

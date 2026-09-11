@@ -85,7 +85,14 @@
               "fastify",
               "nestjs",
               "nextjs",
-              "worker"
+              "worker",
+              "fastapi",
+              "flask",
+              "django",
+              "gin",
+              "echo",
+              "chi",
+              "nethttp"
             ]
           },
           "default": [
@@ -93,7 +100,14 @@
             "fastify",
             "nestjs",
             "nextjs",
-            "worker"
+            "worker",
+            "fastapi",
+            "flask",
+            "django",
+            "gin",
+            "echo",
+            "chi",
+            "nethttp"
           ],
           "description": "Frameworks to detect as entry points."
         },

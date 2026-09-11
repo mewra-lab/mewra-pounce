@@ -3,10 +3,10 @@ import type { EntryPointMatch } from "../../../shared/types";
 import type { FrameworkAdapter, HierarchyTarget } from "./types";
 
 const WORKER_FILE_PATTERN =
-  /(?:\.(?:worker|cron|job|queue)\.(?:ts|tsx|js|jsx|mjs)$|\/(?:workers|jobs|queues|cron)\/)/i;
+  /(?:\.(?:worker|cron|job|queue)\.(?:ts|tsx|js|jsx|mjs|py|go)$|\/(?:workers|jobs|queues|cron|tasks)\/|(?:^|\/)(?:tasks|celery)\.py$)/i;
 
 const WORKER_SYMBOL_PATTERN =
-  /(?:QueueWorker|Worker|CronJob|JobHandler|defineJob|processJob|handleJob|handleTask|@Cron|@Interval|@Timeout|@Process)/i;
+  /(?:QueueWorker|Worker|CronJob|JobHandler|defineJob|processJob|handleJob|handleTask|@Cron|@Interval|@Timeout|@Process|@app\.task|@shared_task|ProcessTask|HandleTask|asynq\.Handler)/i;
 
 export const workerAdapter: FrameworkAdapter = {
   name: "worker",

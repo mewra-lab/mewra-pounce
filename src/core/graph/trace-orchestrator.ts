@@ -8,9 +8,13 @@ import { matchEntryPoint } from "../matchers/match-entry-point";
 
 // MARK: Utilities
 const TEST_FILE_PATTERNS = [
-  /\.(test|spec)\.(ts|tsx|js|jsx)$/,
+  /\.(test|spec)\.(ts|tsx|js|jsx|mjs)$/,
   /__tests__\//,
   /\.test\//,
+  /\/tests?\//,
+  /(?:^|\/)test_[^/]+\.py$/,
+  /[^/]+_test\.py$/,
+  /[^/]+_test\.go$/,
 ];
 
 function isTestFile(filePath: string): boolean {
@@ -88,6 +92,13 @@ export class TraceOrchestrator {
       "nestjs",
       "nextjs",
       "worker",
+      "fastapi",
+      "flask",
+      "django",
+      "gin",
+      "echo",
+      "chi",
+      "nethttp",
     ];
 
     const visited = new Set<string>();

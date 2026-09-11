@@ -66,15 +66,29 @@ describe("matchEntryPoint", () => {
     expect(result).toBeNull();
   });
 
-  it("accepts object with uri and name", () => {
+  it("dispatches to fastapi adapter", () => {
     const result = matchEntryPoint({
-      uri: { fsPath: "/src/pages/api/auth.ts" },
-      name: "default",
+      filePath: "/src/main.py",
+      symbolName: "@app.get",
     });
 
     expect(result).toEqual({
       type: "route",
-      framework: "nextjs",
+      framework: "fastapi",
+      method: "GET",
+    });
+  });
+
+  it("dispatches to gin adapter", () => {
+    const result = matchEntryPoint({
+      filePath: "/src/main.go",
+      symbolName: "router.GET",
+    });
+
+    expect(result).toEqual({
+      type: "route",
+      framework: "gin",
+      method: "GET",
     });
   });
 });

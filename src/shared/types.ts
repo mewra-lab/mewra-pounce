@@ -22,7 +22,18 @@ export interface CallGraph {
 }
 
 export type FrameworkId =
-  "express" | "fastify" | "nestjs" | "nextjs" | "worker";
+  | "express"
+  | "fastify"
+  | "nestjs"
+  | "nextjs"
+  | "worker"
+  | "fastapi"
+  | "flask"
+  | "django"
+  | "gin"
+  | "echo"
+  | "chi"
+  | "nethttp";
 
 export interface EntryPointMatch {
   type: "route" | "worker" | "cron";

@@ -52,6 +52,30 @@ describe("workerAdapter", () => {
     });
   });
 
+  it("detects Python Celery task decorators", () => {
+    const result = workerAdapter.detect({
+      filePath: "/src/tasks.py",
+      symbolName: "@app.task",
+    });
+
+    expect(result).toEqual({
+      type: "worker",
+      framework: "worker",
+    });
+  });
+
+  it("detects Go worker files", () => {
+    const result = workerAdapter.detect({
+      filePath: "/src/jobs/exporter.worker.go",
+      symbolName: "ProcessTask",
+    });
+
+    expect(result).toEqual({
+      type: "worker",
+      framework: "worker",
+    });
+  });
+
   it("returns null for standard utility function", () => {
     const result = workerAdapter.detect({
       filePath: "/src/utils/format.ts",

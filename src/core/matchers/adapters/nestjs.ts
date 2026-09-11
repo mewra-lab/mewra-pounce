@@ -7,6 +7,10 @@ export const nestjsAdapter: FrameworkAdapter = {
   detect(target: HierarchyTarget): EntryPointMatch | null {
     const { filePath } = target;
 
+    if (filePath.endsWith(".go") || filePath.endsWith(".py")) {
+      return null;
+    }
+
     if (
       filePath.includes(".controller.") ||
       filePath.includes(".resolver.") ||
