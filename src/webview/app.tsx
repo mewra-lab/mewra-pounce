@@ -4,6 +4,7 @@ import cytoscape from "cytoscape";
 import dagre from "cytoscape-dagre";
 
 import type { ExtensionMessage, WebviewMessage } from "../shared/messages";
+import { MewraLogo } from "./logo";
 
 cytoscape.use(dagre);
 
@@ -14,6 +15,7 @@ interface VsCodeApi {
 
 interface Props {
   vscode: VsCodeApi;
+  logoUri?: string;
 }
 
 type GraphData = Extract<ExtensionMessage, { kind: "graphData" }>;
@@ -30,7 +32,7 @@ function post(vscode: VsCodeApi, msg: WebviewMessage): void {
 }
 
 // MARK: Main Component
-export function App({ vscode }: Props) {
+export function App({ vscode, logoUri }: Props) {
   const [state, setState] = useState<State>({ status: "idle" });
   const [selectedNode, setSelectedNode] = useState<NodeItem | null>(null);
   const [copiedToast, setCopiedToast] = useState(false);
@@ -47,7 +49,7 @@ export function App({ vscode }: Props) {
         setSelectedNode(null);
       } else if (msg.kind === "mermaidText") {
         setCopiedToast(true);
-        setTimeout(() => setCopiedToast(false), 2500);
+        setTimeout(() => setCopiedToast(false), 2200);
       }
     };
 
@@ -59,23 +61,12 @@ export function App({ vscode }: Props) {
   if (state.status === "idle" || state.status === "loading") {
     return (
       <div class="pounce-loading">
-        <div class="pounce-cat-pulse">
-          <svg
-            class="pounce-logo-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-          >
-            <path d="M12 2L9 9H2l6 4.5-2.5 7.5 6.5-5 6.5 5-2.5-7.5 6-4.5h-7z" />
-          </svg>
-        </div>
-        <div class="pounce-loading-content">
-          <span class="pounce-loading-title">Tracing Call Hierarchy</span>
-          <span class="pounce-loading-sub">
-            Walking reverse callers to API routes and workers…
-          </span>
-        </div>
+        {logoUri ? (
+          <img src={logoUri} class="pounce-loading-logo" alt="Mewra" />
+        ) : (
+          <MewraLogo size={32} class="pounce-loading-logo" />
+        )}
+        <span class="pounce-loading-text">Tracing call hierarchy…</span>
       </div>
     );
   }
@@ -83,16 +74,14 @@ export function App({ vscode }: Props) {
   if (state.status === "error") {
     return (
       <div class="pounce-error-card">
-        <div class="pounce-error-header">
-          <span class="pounce-error-icon">⚠️</span>
-          <h3>Trace Failed</h3>
-        </div>
-        <p class="pounce-error-message">{state.message}</p>
+        <span class="pounce-error-icon">⚠️</span>
+        <h3>Trace Failed</h3>
+        <p>{state.message}</p>
         <button
           class="pounce-btn pounce-btn--primary"
           onClick={() => post(vscode, { kind: "ready" })}
         >
-          Retry Trace
+          Retry
         </button>
       </div>
     );
@@ -100,139 +89,102 @@ export function App({ vscode }: Props) {
 
   const { nodes, edges, rootId, hideTestFiles } = state.graphData;
   const rootNode = nodes.find((n) => n.id === rootId);
+  const callerNodes = nodes.filter((n) => n.id !== rootId);
   const routes = nodes.filter(
     (n) => n.isEntryPoint && n.entryPointType === "route",
   );
   const workers = nodes.filter(
     (n) => n.isEntryPoint && n.entryPointType === "worker",
   );
-  const isLeafFunction = nodes.length <= 1 && edges.length === 0;
+  const isLeaf = callerNodes.length === 0;
 
   return (
     <div class="pounce-root">
-      {/* MARK: Header Toolbar */}
+      {/* MARK: Clean Toolbar */}
       <header class="pounce-header">
-        <div class="pounce-header-brand">
-          <div class="pounce-brand-pill">
-            <svg
-              class="pounce-cat-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="M4 14l2.5-9 4.5 4 4.5-4 2.5 9c0 4-3.5 6-7 6s-7-2-7-6z" />
-              <path d="M9 14h.01M15 14h.01" />
-            </svg>
-            <span class="pounce-brand-name">Mewra Pounce</span>
+        <div class="pounce-header-top">
+          <div class="pounce-brand">
+            {logoUri ? (
+              <img src={logoUri} class="pounce-brand-logo" alt="Mewra" />
+            ) : (
+              <MewraLogo size={18} />
+            )}
+            <span class="pounce-brand-title">Mewra Pounce</span>
+            {rootNode && (
+              <span
+                class="pounce-target-tag"
+                title={`${rootNode.filePath}:${rootNode.line + 1}`}
+                onClick={() =>
+                  post(vscode, {
+                    kind: "openFile",
+                    filePath: rootNode.filePath,
+                    line: rootNode.line,
+                  })
+                }
+              >
+                {rootNode.symbolName}()
+              </span>
+            )}
           </div>
 
-          {rootNode && (
-            <div
-              class="pounce-target-pill"
-              title={`${rootNode.filePath}:${rootNode.line + 1}`}
-              onClick={() => {
-                setSelectedNode(rootNode);
-                post(vscode, {
-                  kind: "openFile",
-                  filePath: rootNode.filePath,
-                  line: rootNode.line,
-                });
-              }}
+          <div class="pounce-header-actions">
+            <button
+              id="btn-toggle-tests"
+              class={`pounce-btn ${hideTestFiles ? "" : "is-active"}`}
+              title={
+                hideTestFiles ? "Show test files in graph" : "Hide test files"
+              }
+              onClick={() => post(vscode, { kind: "toggleTestFiles" })}
             >
-              <span class="pounce-target-label">target:</span>
-              <span class="pounce-target-fn">{rootNode.symbolName}()</span>
-              <span class="pounce-target-loc">:{rootNode.line + 1}</span>
-            </div>
-          )}
+              {hideTestFiles ? "Include Tests" : "Tests Shown"}
+            </button>
+
+            <button
+              id="btn-copy-mermaid"
+              class="pounce-btn pounce-btn--primary"
+              title="Copy graph as Mermaid Markdown"
+              onClick={() => post(vscode, { kind: "exportMermaid" })}
+            >
+              Copy Mermaid
+            </button>
+
+            <button
+              id="btn-retrace"
+              class="pounce-btn pounce-btn--icon"
+              title="Re-trace callers"
+              onClick={() => post(vscode, { kind: "ready" })}
+            >
+              ↺
+            </button>
+          </div>
         </div>
 
-        <div class="pounce-header-stats">
-          {routes.length > 0 && (
-            <span class="pounce-badge pounce-badge--route">
-              <span class="pounce-dot pounce-dot--route" />
-              {routes.length} Route{routes.length !== 1 ? "s" : ""}
+        <div class="pounce-header-bar">
+          <div class="pounce-chips">
+            {routes.length > 0 && (
+              <span class="pounce-chip pounce-chip--route">
+                ● {routes.length} Route{routes.length !== 1 ? "s" : ""}
+              </span>
+            )}
+            {workers.length > 0 && (
+              <span class="pounce-chip pounce-chip--worker">
+                ● {workers.length} Worker{workers.length !== 1 ? "s" : ""}
+              </span>
+            )}
+            <span class="pounce-chip">
+              {callerNodes.length} Caller{callerNodes.length !== 1 ? "s" : ""}
             </span>
-          )}
-          {workers.length > 0 && (
-            <span class="pounce-badge pounce-badge--worker">
-              <span class="pounce-dot pounce-dot--worker" />
-              {workers.length} Worker{workers.length !== 1 ? "s" : ""}
-            </span>
-          )}
-          {!isLeafFunction && (
-            <span class="pounce-badge pounce-badge--muted">
-              {nodes.length} Callers
-            </span>
-          )}
-          {isLeafFunction && (
-            <span class="pounce-badge pounce-badge--warning">
-              Leaf Function (0 Callers)
-            </span>
-          )}
-        </div>
-
-        <div class="pounce-actions">
-          <button
-            id="btn-toggle-tests"
-            class={`pounce-btn pounce-btn--toggle ${hideTestFiles ? "is-active" : ""}`}
-            title="Toggle inclusion of test and spec files in call graph"
-            onClick={() => post(vscode, { kind: "toggleTestFiles" })}
-          >
-            <svg
-              class="pounce-btn-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-              <circle cx="12" cy="12" r="3" />
-            </svg>
-            <span>{hideTestFiles ? "Tests Hidden" : "Tests Shown"}</span>
-          </button>
-
-          <button
-            id="btn-copy-mermaid"
-            class="pounce-btn pounce-btn--primary"
-            title="Export full graph to Mermaid syntax"
-            onClick={() => post(vscode, { kind: "exportMermaid" })}
-          >
-            <svg
-              class="pounce-btn-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-            </svg>
-            <span>Copy Mermaid</span>
-          </button>
-
-          <button
-            id="btn-retrace"
-            class="pounce-btn pounce-btn--icon-only"
-            title="Re-trace callers from cursor position"
-            onClick={() => post(vscode, { kind: "ready" })}
-          >
-            <svg
-              class="pounce-btn-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="M23 4v6h-6M1 20v-6h6" />
-              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
-            </svg>
-          </button>
+            {isLeaf && (
+              <span class="pounce-chip pounce-chip--muted">
+                Leaf function (no callers found)
+              </span>
+            )}
+          </div>
         </div>
       </header>
 
-      {/* MARK: Canvas & Overlays */}
-      <div class="pounce-canvas-wrapper">
+      {/* MARK: Graph Canvas */}
+      <div class="pounce-canvas">
         <GraphView
           nodes={nodes}
           edges={edges}
@@ -241,98 +193,70 @@ export function App({ vscode }: Props) {
           vscode={vscode}
         />
 
-        {/* Leaf Function Contextual Notice */}
-        {isLeafFunction && rootNode && (
-          <div class="pounce-leaf-banner">
-            <div class="pounce-leaf-header">
-              <span class="pounce-leaf-icon">ℹ️</span>
-              <h4>0 Incoming Callers Found</h4>
-            </div>
-            <p>
-              <code>{rootNode.symbolName}()</code> has no incoming calls
-              detected in the workspace.
-            </p>
-            <p class="pounce-leaf-sub">
-              It may be an unreferenced utility function, a top-level route
-              handler, or references are still being indexed by TypeScript LSP.
-            </p>
-            <button
-              class="pounce-btn pounce-btn--sm"
-              onClick={() => post(vscode, { kind: "ready" })}
-            >
-              Re-scan References
-            </button>
-          </div>
-        )}
-
-        {/* Selected Node Details Card */}
+        {/* Selected Node Details Bar */}
         {selectedNode && (
-          <div class="pounce-inspector-card">
-            <div class="pounce-inspector-main">
-              <div class="pounce-inspector-header">
-                <span class="pounce-inspector-type">
-                  {selectedNode.id === rootId
-                    ? "TARGET CALLEE"
-                    : selectedNode.isEntryPoint
-                      ? `${(selectedNode.entryPointType ?? "ENTRY POINT").toUpperCase()} (${selectedNode.framework ?? "custom"})`
-                      : "CALLER FUNCTION"}
-                </span>
-                <button
-                  class="pounce-inspector-close"
-                  onClick={() => setSelectedNode(null)}
-                >
-                  ✕
-                </button>
-              </div>
-              <h4 class="pounce-inspector-symbol">
-                {selectedNode.symbolName}()
-              </h4>
-              <p class="pounce-inspector-file">
+          <div class="pounce-inspector">
+            <div class="pounce-inspector-info">
+              <span class="pounce-inspector-name">
+                {selectedNode.symbolName}
+              </span>
+              <span class="pounce-inspector-path">
                 {selectedNode.filePath.split("/").slice(-2).join("/")}:
                 {selectedNode.line + 1}
-              </p>
+              </span>
             </div>
-            <button
-              class="pounce-btn pounce-btn--primary pounce-btn--sm"
-              onClick={() =>
-                post(vscode, {
-                  kind: "openFile",
-                  filePath: selectedNode.filePath,
-                  line: selectedNode.line,
-                })
-              }
-            >
-              Open in Editor ↗
-            </button>
+            <div class="pounce-inspector-actions">
+              <button
+                class="pounce-btn pounce-btn--sm pounce-btn--primary"
+                onClick={() =>
+                  post(vscode, {
+                    kind: "openFile",
+                    filePath: selectedNode.filePath,
+                    line: selectedNode.line,
+                  })
+                }
+              >
+                Open ↗
+              </button>
+              <button
+                class="pounce-btn pounce-btn--sm"
+                onClick={() => setSelectedNode(null)}
+              >
+                ✕
+              </button>
+            </div>
           </div>
         )}
 
-        {/* Floating Legend */}
+        {/* Legend */}
         <div class="pounce-legend">
-          <span class="pounce-legend-item">
+          <span>
             <span class="pounce-dot pounce-dot--root" /> Target
           </span>
-          <span class="pounce-legend-item">
+          <span>
             <span class="pounce-dot pounce-dot--route" /> Route
           </span>
-          <span class="pounce-legend-item">
+          <span>
             <span class="pounce-dot pounce-dot--worker" /> Worker
           </span>
-          <span class="pounce-legend-item">
+          <span>
+            <span class="pounce-dot pounce-dot--test" /> Test
+          </span>
+          <span>
             <span class="pounce-dot pounce-dot--caller" /> Caller
           </span>
         </div>
 
         {/* Copied Toast */}
         {copiedToast && (
-          <div class="pounce-toast">✓ Copied Mermaid graph to clipboard</div>
+          <div class="pounce-toast">✓ Copied Mermaid to clipboard</div>
         )}
       </div>
     </div>
   );
 }
 
-// MARK: Graph View Component
+// MARK: Cytoscape View
 interface GraphViewProps {
   nodes: NodeItem[];
   edges: GraphData["edges"];
@@ -360,27 +284,24 @@ function GraphView({
       (e) => nodeSet.has(e.from) && nodeSet.has(e.to),
     );
 
-    const cyElements = [
+    const elements = [
       ...nodes.map((n) => {
         const isRoot = n.id === rootId;
         const isEntry = n.isEntryPoint;
-        let badge = "";
-        if (isRoot) badge = "TARGET";
-        else if (isEntry) badge = (n.entryPointType ?? "ROUTE").toUpperCase();
+        const isTest = n.isTestFile ?? false;
+        let kind = "caller";
+        if (isRoot) kind = "target";
+        else if (isEntry && n.entryPointType === "route") kind = "route";
+        else if (isEntry && n.entryPointType === "worker") kind = "worker";
+        else if (isTest) kind = "test";
 
         return {
           data: {
             id: n.id,
             label: n.symbolName,
             sublabel: `${n.filePath.split("/").pop()}:${n.line + 1}`,
-            badge,
-            filePath: n.filePath,
-            line: n.line,
-            isEntryPoint: n.isEntryPoint,
-            entryPointType: n.entryPointType ?? "route",
-            isRoot,
-            isUnresolved: n.isUnresolved ?? false,
-            rawNode: n,
+            kind,
+            raw: n,
           },
         };
       }),
@@ -395,81 +316,77 @@ function GraphView({
 
     const cy = cytoscape({
       container: el,
-      elements: cyElements,
+      elements,
       boxSelectionEnabled: false,
-      autounselectify: false,
       layout: {
         name: "dagre",
         rankDir: "TB",
-        nodeSep: 60,
-        rankSep: 80,
+        nodeSep: 40,
+        rankSep: 60,
       } as cytoscape.LayoutOptions,
       style: [
         {
           selector: "node",
           style: {
             label: "data(label)",
-            "background-color": "#181926",
-            "border-color": "#3B4261",
+            "background-color": "#1e2030",
+            "border-color": "#3b4261",
             "border-width": 1.5,
-            color: "#CAD3F5",
+            color: "#cad3f5",
             "font-size": 11,
-            "font-weight": "bold",
+            "font-weight": "normal",
             "font-family": "var(--vscode-font-family, sans-serif)",
             "text-valign": "center",
             "text-halign": "center",
-            "text-wrap": "wrap",
-            "text-max-width": "140px",
-            width: 150,
-            height: 48,
-            shape: "roundrectangle",
-            "transition-property":
-              "border-color, background-color, border-width",
-            "transition-duration": 0.2,
-          },
-        },
-        {
-          selector: "node[?isRoot]",
-          style: {
-            "background-color": "#4F46E5",
-            "border-color": "#818CF8",
-            "border-width": 2.5,
-            color: "#FFFFFF",
+            "text-wrap": "ellipsis",
+            "text-max-width": "150px",
             width: 160,
-            height: 52,
+            height: 40,
+            shape: "roundrectangle",
           },
         },
         {
-          selector: "node[?isEntryPoint][entryPointType = 'route']",
+          selector: "node[kind = 'target']",
           style: {
-            "background-color": "#065F46",
-            "border-color": "#10B981",
+            "background-color": "#1e3a8a",
+            "border-color": "#3b82f6",
             "border-width": 2,
-            color: "#ECFDF5",
+            color: "#ffffff",
+            "font-weight": "bold",
           },
         },
         {
-          selector: "node[?isEntryPoint][entryPointType = 'worker']",
+          selector: "node[kind = 'route']",
           style: {
-            "background-color": "#92400E",
-            "border-color": "#F59E0B",
+            "background-color": "#064e3b",
+            "border-color": "#10b981",
             "border-width": 2,
-            color: "#FFFBEB",
+            color: "#ecfdf5",
           },
         },
         {
-          selector: "node[?isUnresolved]",
+          selector: "node[kind = 'worker']",
           style: {
-            "border-color": "#EF4444",
+            "background-color": "#78350f",
+            "border-color": "#f59e0b",
             "border-width": 2,
-            "border-style": "dashed",
+            color: "#fffbeb",
+          },
+        },
+        {
+          selector: "node[kind = 'test']",
+          style: {
+            "background-color": "#3b1d6e",
+            "border-color": "#8b5cf6",
+            "border-width": 1.5,
+            color: "#f5f3ff",
           },
         },
         {
           selector: "node:selected",
           style: {
-            "border-color": "#A855F7",
-            "border-width": 3,
+            "border-color": "#f59e0b",
+            "border-width": 2.5,
           },
         },
         {
@@ -477,41 +394,26 @@ function GraphView({
           style: {
             "curve-style": "bezier",
             "target-arrow-shape": "triangle",
-            "line-color": "#475569",
-            "target-arrow-color": "#475569",
-            width: 1.8,
-            "arrow-scale": 1.2,
-          },
-        },
-        {
-          selector: "edge:selected",
-          style: {
-            "line-color": "#A855F7",
-            "target-arrow-color": "#A855F7",
-            width: 2.5,
+            "line-color": "#4b5563",
+            "target-arrow-color": "#4b5563",
+            width: 1.5,
+            "arrow-scale": 1,
           },
         },
       ],
     });
 
     cy.on("tap", "node", (evt: cytoscape.EventObject) => {
-      const data = evt.target.data() as {
-        filePath: string;
-        line: number;
-        rawNode: NodeItem;
-      };
-      onSelectNode(data.rawNode);
+      const raw = evt.target.data("raw") as NodeItem;
+      onSelectNode(raw);
     });
 
     cy.on("dbltap", "node", (evt: cytoscape.EventObject) => {
-      const data = evt.target.data() as {
-        filePath: string;
-        line: number;
-      };
+      const raw = evt.target.data("raw") as NodeItem;
       post(vscode, {
         kind: "openFile",
-        filePath: data.filePath,
-        line: data.line,
+        filePath: raw.filePath,
+        line: raw.line,
       });
     });
 
@@ -521,10 +423,9 @@ function GraphView({
       }
     });
 
-    // Auto-fit nicely
     setTimeout(() => {
       cy.resize();
-      cy.fit(undefined, 40);
+      cy.fit(undefined, 30);
     }, 50);
 
     cyRef.current = cy;
@@ -535,59 +436,37 @@ function GraphView({
     };
   }, [nodes, edges, rootId, onSelectNode, vscode]);
 
-  const handleZoomIn = () => {
-    if (!cyRef.current) return;
-    cyRef.current.zoom(cyRef.current.zoom() * 1.25);
-  };
-
-  const handleZoomOut = () => {
-    if (!cyRef.current) return;
-    cyRef.current.zoom(cyRef.current.zoom() * 0.8);
-  };
-
-  const handleFit = () => {
-    if (!cyRef.current) return;
-    cyRef.current.fit(undefined, 40);
-  };
-
-  const handleReset = () => {
-    if (!cyRef.current) return;
-    cyRef.current
-      .layout({
-        name: "dagre",
-        rankDir: "TB",
-        nodeSep: 60,
-        rankSep: 80,
-      } as cytoscape.LayoutOptions)
-      .run();
-    cyRef.current.fit(undefined, 40);
-  };
-
   return (
-    <div class="pounce-graph-container">
-      <div id="cy-container" ref={containerRef} class="pounce-cy" />
+    <div class="pounce-graph-viewport">
+      <div ref={containerRef} class="pounce-cy-mount" />
 
-      {/* Floating Canvas Controls */}
-      <div class="pounce-canvas-controls">
-        <button class="pounce-hud-btn" title="Zoom In" onClick={handleZoomIn}>
+      <div class="pounce-hud">
+        <button
+          class="pounce-hud-btn"
+          title="Zoom in"
+          onClick={() => {
+            if (cyRef.current) cyRef.current.zoom(cyRef.current.zoom() * 1.25);
+          }}
+        >
           +
         </button>
-        <button class="pounce-hud-btn" title="Zoom Out" onClick={handleZoomOut}>
+        <button
+          class="pounce-hud-btn"
+          title="Zoom out"
+          onClick={() => {
+            if (cyRef.current) cyRef.current.zoom(cyRef.current.zoom() * 0.8);
+          }}
+        >
           −
         </button>
         <button
           class="pounce-hud-btn"
-          title="Fit to Screen"
-          onClick={handleFit}
+          title="Fit view"
+          onClick={() => {
+            if (cyRef.current) cyRef.current.fit(undefined, 30);
+          }}
         >
           ⛶
-        </button>
-        <button
-          class="pounce-hud-btn"
-          title="Reset Layout"
-          onClick={handleReset}
-        >
-          ↺
         </button>
       </div>
     </div>

@@ -10,6 +10,8 @@ declare const acquireVsCodeApi: () => {
 const vscode = acquireVsCodeApi();
 
 const root = document.getElementById("root");
+const logoUri = root?.dataset.logoUri ?? "";
+
 if (root) {
-  render(<App vscode={vscode} />, root);
+  render(<App vscode={vscode} logoUri={logoUri} />, root);
 }

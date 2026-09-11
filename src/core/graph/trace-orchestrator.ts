@@ -1,3 +1,4 @@
+import * as path from "node:path";
 import * as vscode from "vscode";
 
 import type { CallEdge, CallNode } from "../../shared/types";
@@ -80,7 +81,16 @@ export class TraceOrchestrator {
     const visited = new Set<string>();
     const nodes: CallNode[] = [];
     const edges: CallEdge[] = [];
+    const edgeSet = new Set<string>();
     let nodeCount = 0;
+
+    const addEdge = (from: string, to: string) => {
+      const key = `${from}->${to}`;
+      if (!edgeSet.has(key)) {
+        edgeSet.add(key);
+        edges.push({ from, to });
+      }
+    };
 
     const dfs = async (
       item: vscode.CallHierarchyItem,
@@ -99,24 +109,96 @@ export class TraceOrchestrator {
         vscode.CallHierarchyIncomingCall[]
       >("vscode.provideIncomingCalls", item);
 
-      if (!incoming || incoming.length === 0) return;
+      if (incoming && incoming.length > 0) {
+        nodeCount += incoming.length;
 
-      nodeCount += incoming.length;
+        if (nodeCount > 500) {
+          const answer = await vscode.window.showWarningMessage(
+            `Mewra Pounce: Over 500 incoming nodes found. Continue tracing?`,
+            "Continue",
+            "Stop here",
+          );
+          if (answer !== "Continue") return;
+          nodeCount = 0;
+        }
 
-      if (nodeCount > 500) {
-        const answer = await vscode.window.showWarningMessage(
-          `Mewra Pounce: Over 500 incoming nodes found. Continue tracing?`,
-          "Continue",
-          "Stop here",
-        );
-        if (answer !== "Continue") return;
-        nodeCount = 0;
+        for (const call of incoming) {
+          const callerId = toNodeId(call.from);
+          addEdge(callerId, nodeId);
+          await dfs(call.from, depth + 1);
+        }
       }
 
-      for (const call of incoming) {
-        const callerId = toNodeId(call.from);
-        edges.push({ from: callerId, to: nodeId });
-        await dfs(call.from, depth + 1);
+      // Supplementary reference lookup: finds callers in test files, Vue files, or non-hierarchy scopes
+      if (!incoming || incoming.length === 0 || depth === 0) {
+        try {
+          const references = await vscode.commands.executeCommand<
+            vscode.Location[]
+          >(
+            "vscode.executeReferenceProvider",
+            item.uri,
+            item.selectionRange.start,
+          );
+
+          if (references && references.length > 0) {
+            const externalRefs = references.filter(
+              (r) =>
+                !(
+                  r.uri.fsPath === item.uri.fsPath &&
+                  r.range.start.line === item.selectionRange.start.line
+                ),
+            );
+
+            const seenFiles = new Set<string>();
+
+            for (const ref of externalRefs) {
+              const fileKey = `${ref.uri.fsPath}:${ref.range.start.line}`;
+              if (seenFiles.has(fileKey)) continue;
+              seenFiles.add(fileKey);
+
+              const hierarchyItems = await vscode.commands.executeCommand<
+                vscode.CallHierarchyItem[]
+              >("vscode.prepareCallHierarchy", ref.uri, ref.range.start);
+
+              if (hierarchyItems && hierarchyItems.length > 0) {
+                const parentItem = hierarchyItems[0]!;
+                const parentId = toNodeId(parentItem);
+                if (parentId !== nodeId) {
+                  addEdge(parentId, nodeId);
+                  if (!visited.has(parentId)) {
+                    await dfs(parentItem, depth + 1);
+                  }
+                  continue;
+                }
+              }
+
+              const fileName = path.basename(ref.uri.fsPath);
+              const isTest = isTestFile(ref.uri.fsPath);
+              const callerId = `${ref.uri.fsPath}:${fileName}:${ref.range.start.line}`;
+
+              if (!visited.has(callerId)) {
+                visited.add(callerId);
+                const callerNode: CallNode = {
+                  id: callerId,
+                  symbolName: isTest
+                    ? `${fileName}:${ref.range.start.line + 1}`
+                    : fileName,
+                  filePath: ref.uri.fsPath,
+                  line: ref.range.start.line,
+                  isEntryPoint: false,
+                };
+                if (isTest) {
+                  callerNode.isTestFile = true;
+                }
+                nodes.push(callerNode);
+              }
+
+              addEdge(callerId, nodeId);
+            }
+          }
+        } catch {
+          // Ignore reference provider errors
+        }
       }
     };
 

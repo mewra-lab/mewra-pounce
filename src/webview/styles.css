@@ -1,26 +1,5 @@
 /* MARK: Design Tokens */
 :root {
-  --pounce-bg: var(--vscode-editor-background, #12131a);
-  --pounce-surface: var(--vscode-sideBar-background, #181926);
-  --pounce-surface-elevated: var(--vscode-editorWidget-background, #1e2030);
-  --pounce-border: var(--vscode-widget-border, rgba(255, 255, 255, 0.08));
-  --pounce-border-strong: rgba(255, 255, 255, 0.15);
-  --pounce-fg: var(--vscode-editor-foreground, #cad3f5);
-  --pounce-fg-muted: var(--vscode-descriptionForeground, #939ab7);
-  --pounce-fg-subtle: #6e738d;
-
-  /* Brand and Semantic Colors */
-  --pounce-brand: #8b5cf6;
-  --pounce-brand-glow: rgba(139, 92, 246, 0.35);
-  --pounce-primary-btn: #7c3aed;
-  --pounce-primary-btn-hover: #6d28d9;
-  --pounce-root: #6366f1;
-  --pounce-route: #10b981;
-  --pounce-worker: #f59e0b;
-  --pounce-caller: #3b82f6;
-  --pounce-unresolved: #ef4444;
-
-  /* Typography & Sizing */
   --pounce-font-sans: var(
     --vscode-font-family,
     -apple-system,
@@ -35,14 +14,9 @@
     "Fira Code",
     monospace
   );
-  --pounce-radius-sm: 4px;
-  --pounce-radius-md: 6px;
-  --pounce-radius-lg: 10px;
-  --pounce-radius-full: 9999px;
-  --pounce-transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* MARK: Base Resets */
+/* MARK: Base */
 *,
 *::before,
 *::after {
@@ -56,13 +30,12 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background-color: var(--pounce-bg);
-  color: var(--pounce-fg);
+  background: var(--vscode-editor-background, #1e1e1e);
+  color: var(--vscode-editor-foreground, #d4d4d4);
   font-family: var(--pounce-font-sans);
   font-size: 12px;
-  line-height: 1.5;
+  line-height: 1.4;
   user-select: none;
-  -webkit-font-smoothing: antialiased;
 }
 
 #root {
@@ -76,291 +49,210 @@ body {
   width: 100%;
   height: 100vh;
   position: relative;
-  background-color: var(--pounce-bg);
+  background: var(--vscode-editor-background, #1e1e1e);
 }
 
-/* MARK: Header Toolbar */
+/* MARK: Toolbar Header */
 .pounce-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 10px;
+  background: var(--vscode-sideBar-background, #252526);
+  border-bottom: 1px solid var(--vscode-widget-border, #3c3c3c);
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.pounce-header-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 14px;
-  gap: 12px;
-  background: color-mix(in srgb, var(--pounce-surface) 85%, transparent);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--pounce-border);
-  z-index: 20;
-  flex-shrink: 0;
-  min-height: 48px;
-}
-
-.pounce-header-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
-}
-
-.pounce-brand-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 8px;
-  border-radius: var(--pounce-radius-full);
-  background: rgba(139, 92, 246, 0.12);
-  border: 1px solid rgba(139, 92, 246, 0.3);
-  color: #c4b5fd;
-  font-weight: 600;
-  font-size: 11px;
-}
-
-.pounce-cat-icon {
-  width: 14px;
-  height: 14px;
-  stroke: #a78bfa;
-}
-
-.pounce-target-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 8px;
-  border-radius: var(--pounce-radius-sm);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--pounce-border);
-  cursor: pointer;
-  transition: var(--pounce-transition);
-}
-
-.pounce-target-pill:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: var(--pounce-brand);
-}
-
-.pounce-target-label {
-  font-size: 10px;
-  text-transform: uppercase;
-  color: var(--pounce-fg-subtle);
-  font-weight: 600;
-  letter-spacing: 0.04em;
-}
-
-.pounce-target-fn {
-  font-family: var(--pounce-font-mono);
-  font-size: 11px;
-  color: #93c5fd;
-  font-weight: 600;
-}
-
-.pounce-target-loc {
-  font-family: var(--pounce-font-mono);
-  font-size: 10px;
-  color: var(--pounce-fg-muted);
-}
-
-/* MARK: Stats & Badges */
-.pounce-header-stats {
-  display: flex;
-  align-items: center;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.pounce-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 9px;
-  border-radius: var(--pounce-radius-full);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-}
-
-.pounce-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.pounce-dot--root {
-  background: var(--pounce-root);
-  box-shadow: 0 0 6px var(--pounce-root);
-}
-
-.pounce-dot--route {
-  background: var(--pounce-route);
-  box-shadow: 0 0 6px var(--pounce-route);
-}
-
-.pounce-dot--worker {
-  background: var(--pounce-worker);
-  box-shadow: 0 0 6px var(--pounce-worker);
-}
-
-.pounce-dot--caller {
-  background: var(--pounce-caller);
-}
-
-.pounce-badge--route {
-  background: rgba(16, 185, 129, 0.14);
-  color: #34d399;
-  border: 1px solid rgba(16, 185, 129, 0.35);
-}
-
-.pounce-badge--worker {
-  background: rgba(245, 158, 11, 0.14);
-  color: #fbbf24;
-  border: 1px solid rgba(245, 158, 11, 0.35);
-}
-
-.pounce-badge--muted {
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--pounce-fg-muted);
-  border: 1px solid var(--pounce-border);
-}
-
-.pounce-badge--warning {
-  background: rgba(239, 68, 68, 0.12);
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.28);
-}
-
-/* MARK: Action Buttons */
-.pounce-actions {
+.pounce-brand {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.pounce-brand-logo {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  display: block;
+}
+
+.pounce-brand-title {
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--vscode-editor-foreground, #d4d4d4);
+}
+
+.pounce-target-tag {
+  font-family: var(--pounce-font-mono);
+  font-size: 11px;
+  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  padding: 1px 6px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.pounce-target-tag:hover {
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.pounce-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   flex-shrink: 0;
 }
 
 .pounce-btn {
+  height: 24px;
+  padding: 0 8px;
+  font-size: 11px;
+  font-family: inherit;
+  border-radius: 3px;
+  border: 1px solid var(--vscode-widget-border, #3c3c3c);
+  background: var(--vscode-button-secondaryBackground, #2d2d2d);
+  color: var(--vscode-button-secondaryForeground, #cccccc);
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
-  height: 28px;
-  padding: 0 10px;
-  border-radius: var(--pounce-radius-sm);
-  border: 1px solid var(--pounce-border);
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--pounce-fg);
-  font-family: inherit;
-  font-size: 11px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--pounce-transition);
+  gap: 4px;
   white-space: nowrap;
 }
 
 .pounce-btn:hover {
-  background: rgba(255, 255, 255, 0.09);
-  border-color: var(--pounce-border-strong);
+  background: var(--vscode-button-secondaryHoverBackground, #3a3a3a);
   color: #ffffff;
-  transform: translateY(-1px);
-}
-
-.pounce-btn:active {
-  transform: translateY(0);
 }
 
 .pounce-btn--primary {
-  background: var(--pounce-primary-btn);
-  border-color: rgba(255, 255, 255, 0.2);
-  color: #ffffff;
-  font-weight: 600;
-  box-shadow: 0 2px 6px var(--pounce-brand-glow);
+  background: var(--vscode-button-background, #0e639c);
+  color: var(--vscode-button-foreground, #ffffff);
+  border-color: transparent;
 }
 
 .pounce-btn--primary:hover {
-  background: var(--pounce-primary-btn-hover);
-  border-color: rgba(255, 255, 255, 0.35);
-  box-shadow: 0 3px 10px var(--pounce-brand-glow);
+  background: var(--vscode-button-hoverBackground, #1177bb);
 }
 
-.pounce-btn--toggle.is-active {
-  background: rgba(139, 92, 246, 0.18);
+.pounce-btn.is-active {
+  background: rgba(139, 92, 246, 0.2);
   border-color: rgba(139, 92, 246, 0.4);
-  color: #ddd6fe;
+  color: #c4b5fd;
 }
 
-.pounce-btn--icon-only {
-  width: 28px;
+.pounce-btn--icon {
+  width: 24px;
   padding: 0;
+  justify-content: center;
+  font-size: 13px;
 }
 
 .pounce-btn--sm {
-  height: 24px;
-  padding: 0 8px;
+  height: 20px;
+  padding: 0 6px;
+  font-size: 10px;
+}
+
+.pounce-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pounce-chips {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.pounce-chip {
   font-size: 11px;
+  color: var(--vscode-descriptionForeground, #858585);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--vscode-widget-border, rgba(255, 255, 255, 0.08));
+  padding: 1px 7px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
-.pounce-btn-icon {
-  width: 13px;
-  height: 13px;
-  flex-shrink: 0;
+.pounce-chip--route {
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.25);
 }
 
-/* MARK: Canvas & Overlays */
-.pounce-canvas-wrapper {
+.pounce-chip--worker {
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.25);
+}
+
+.pounce-chip--muted {
+  color: var(--vscode-disabledForeground, #6b7280);
+}
+
+/* MARK: Canvas Viewport */
+.pounce-canvas {
   position: relative;
   flex: 1;
   width: 100%;
-  height: calc(100vh - 48px);
-  background-color: var(--pounce-bg);
-  background-image: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.06) 1px,
-    transparent 1px
-  );
-  background-size: 24px 24px;
+  height: 100%;
   overflow: hidden;
+  background: var(--vscode-editor-background, #1e1e1e);
 }
 
-.pounce-graph-container {
+.pounce-graph-viewport {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
 }
 
-.pounce-cy {
+.pounce-cy-mount {
   width: 100%;
   height: 100%;
 }
 
-/* MARK: Floating HUD Controls */
-.pounce-canvas-controls {
+/* MARK: Floating HUD & Legend */
+.pounce-hud {
   position: absolute;
-  right: 14px;
-  bottom: 14px;
+  right: 10px;
+  bottom: 10px;
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  background: rgba(24, 26, 42, 0.85);
-  backdrop-filter: blur(12px);
-  padding: 4px;
-  border-radius: var(--pounce-radius-md);
-  border: 1px solid var(--pounce-border);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
-  z-index: 10;
+  gap: 2px;
+  background: var(--vscode-editorWidget-background, #252526);
+  border: 1px solid var(--vscode-editorWidget-border, #454545);
+  border-radius: 4px;
+  padding: 2px;
+  z-index: 5;
 }
 
 .pounce-hud-btn {
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
+  border: none;
+  background: transparent;
+  color: var(--vscode-editor-foreground, #d4d4d4);
+  font-size: 13px;
+  border-radius: 2px;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: none;
-  background: transparent;
-  color: var(--pounce-fg);
-  font-size: 14px;
-  border-radius: var(--pounce-radius-sm);
-  cursor: pointer;
-  transition: var(--pounce-transition);
 }
 
 .pounce-hud-btn:hover {
@@ -368,274 +260,177 @@ body {
   color: #ffffff;
 }
 
-/* MARK: Floating Legend */
 .pounce-legend {
   position: absolute;
-  left: 14px;
-  bottom: 14px;
+  left: 10px;
+  bottom: 10px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: rgba(24, 26, 42, 0.85);
-  backdrop-filter: blur(12px);
-  padding: 6px 12px;
-  border-radius: var(--pounce-radius-full);
-  border: 1px solid var(--pounce-border);
+  gap: 8px;
   font-size: 10px;
-  color: var(--pounce-fg-muted);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
-  z-index: 10;
+  color: var(--vscode-descriptionForeground, #858585);
+  background: color-mix(
+    in srgb,
+    var(--vscode-editorWidget-background, #252526) 80%,
+    transparent
+  );
+  border: 1px solid var(--vscode-widget-border, rgba(255, 255, 255, 0.08));
+  padding: 3px 8px;
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 5;
 }
 
-.pounce-legend-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
+.pounce-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 3px;
+}
+
+.pounce-dot--root {
+  background: #3b82f6;
+}
+
+.pounce-dot--route {
+  background: #10b981;
+}
+
+.pounce-dot--worker {
+  background: #f59e0b;
+}
+
+.pounce-dot--test {
+  background: #8b5cf6;
+}
+
+.pounce-dot--caller {
+  background: #64748b;
 }
 
 /* MARK: Selected Node Inspector */
-.pounce-inspector-card {
+.pounce-inspector {
   position: absolute;
-  left: 14px;
-  bottom: 52px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background: rgba(30, 32, 48, 0.95);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(139, 92, 246, 0.35);
-  border-radius: var(--pounce-radius-md);
-  padding: 10px 14px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
-  z-index: 15;
-  animation: pounce-slide-up 0.2s ease-out;
-}
-
-@keyframes pounce-slide-up {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.pounce-inspector-main {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.pounce-inspector-header {
+  left: 10px;
+  right: 10px;
+  bottom: 38px;
+  background: var(--vscode-editorWidget-background, #252526);
+  border: 1px solid var(--vscode-editorWidget-border, #454545);
+  border-radius: 4px;
+  padding: 6px 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.pounce-inspector-type {
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  color: #a78bfa;
+.pounce-inspector-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
 }
 
-.pounce-inspector-close {
-  background: none;
-  border: none;
-  color: var(--pounce-fg-subtle);
-  cursor: pointer;
-  font-size: 11px;
-}
-
-.pounce-inspector-close:hover {
-  color: var(--pounce-fg);
-}
-
-.pounce-inspector-symbol {
+.pounce-inspector-name {
   font-family: var(--pounce-font-mono);
-  font-size: 13px;
   font-weight: 600;
+  font-size: 11px;
   color: #ffffff;
+  white-space: nowrap;
 }
 
-.pounce-inspector-file {
+.pounce-inspector-path {
   font-family: var(--pounce-font-mono);
   font-size: 10px;
-  color: var(--pounce-fg-muted);
+  color: var(--pounce-descriptionForeground, #858585);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
-/* MARK: Leaf Function Banner */
-.pounce-leaf-banner {
-  position: absolute;
-  top: 18px;
-  left: 50%;
-  transform: translateX(-50%);
-  max-width: 480px;
-  width: 90%;
-  background: rgba(24, 26, 42, 0.92);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: var(--pounce-radius-lg);
-  padding: 16px 20px;
-  text-align: center;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-
-.pounce-leaf-header {
+.pounce-inspector-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
+  flex-shrink: 0;
 }
 
-.pounce-leaf-header h4 {
-  font-size: 13px;
-  font-weight: 600;
-  color: #ffffff;
-}
-
-.pounce-leaf-banner p {
-  font-size: 12px;
-  color: var(--pounce-fg);
-}
-
-.pounce-leaf-banner code {
-  font-family: var(--pounce-font-mono);
-  color: #93c5fd;
-  background: rgba(255, 255, 255, 0.08);
-  padding: 1px 4px;
-  border-radius: 3px;
-}
-
-.pounce-leaf-sub {
-  font-size: 11px !important;
-  color: var(--pounce-fg-muted) !important;
-  line-height: 1.4;
-}
-
-/* MARK: Toast */
+/* MARK: Toast & Loading */
 .pounce-toast {
   position: absolute;
-  top: 18px;
-  right: 18px;
-  background: #10b981;
+  top: 10px;
+  right: 10px;
+  background: #059669;
   color: #ffffff;
-  padding: 8px 14px;
-  border-radius: var(--pounce-radius-full);
-  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 3px;
   font-size: 11px;
-  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
-  z-index: 50;
-  animation: pounce-toast-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 20;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-@keyframes pounce-toast-in {
-  from {
-    opacity: 0;
-    transform: translateY(-8px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* MARK: Loading & Error States */
 .pounce-loading {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 12px;
   width: 100%;
   height: 100vh;
-  background-color: var(--pounce-bg);
 }
 
-.pounce-cat-pulse {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: rgba(139, 92, 246, 0.15);
-  border: 1px solid rgba(139, 92, 246, 0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: pounce-pulse 1.8s infinite ease-in-out;
+.pounce-loading-logo {
+  animation: pounce-fade-spin 2s infinite ease-in-out;
 }
 
-@keyframes pounce-pulse {
+@keyframes pounce-fade-spin {
   0% {
+    opacity: 0.6;
     transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4);
   }
-  70% {
+  50% {
+    opacity: 1;
     transform: scale(1.05);
-    box-shadow: 0 0 0 16px rgba(139, 92, 246, 0);
   }
   100% {
+    opacity: 0.6;
     transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0);
   }
 }
 
-.pounce-logo-icon {
-  width: 24px;
-  height: 24px;
-  stroke: #c4b5fd;
-}
-
-.pounce-loading-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-.pounce-loading-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: #ffffff;
-}
-
-.pounce-loading-sub {
+.pounce-loading-text {
   font-size: 12px;
-  color: var(--pounce-fg-muted);
+  color: var(--pounce-descriptionForeground, #858585);
 }
 
 .pounce-error-card {
-  margin: 40px auto;
-  max-width: 420px;
-  background: var(--pounce-surface);
-  border: 1px solid var(--pounce-border);
-  border-radius: var(--pounce-radius-lg);
-  padding: 24px;
+  margin: 30px auto;
+  max-width: 360px;
+  background: var(--vscode-editorWidget-background, #252526);
+  border: 1px solid var(--vscode-editorWidget-border, #454545);
+  border-radius: 6px;
+  padding: 20px;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
-.pounce-error-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.pounce-error-icon {
+  font-size: 24px;
 }
 
-.pounce-error-header h3 {
-  font-size: 15px;
+.pounce-error-card h3 {
+  font-size: 14px;
   color: #ef4444;
 }
 
-.pounce-error-message {
+.pounce-error-card p {
   font-size: 12px;
-  color: var(--pounce-fg-muted);
+  color: var(--vscode-descriptionForeground, #858585);
 }
