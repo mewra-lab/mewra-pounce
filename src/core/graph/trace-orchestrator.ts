@@ -1,3 +1,4 @@
+// MARK: Imports
 import * as path from "node:path";
 import * as vscode from "vscode";
 
@@ -5,6 +6,7 @@ import type { CallEdge, CallNode } from "../../shared/types";
 import type { EntryPointCache } from "../matchers/entry-point-cache";
 import { matchEntryPoint } from "../matchers/match-entry-point";
 
+// MARK: Utilities
 const TEST_FILE_PATTERNS = [
   /\.(test|spec)\.(ts|tsx|js|jsx)$/,
   /__tests__\//,
@@ -45,12 +47,14 @@ function toCallNode(
   return node;
 }
 
+// MARK: Types
 export interface TraceResult {
   nodes: CallNode[];
   edges: CallEdge[];
   rootId: string;
 }
 
+// MARK: Trace Orchestrator
 export class TraceOrchestrator {
   private readonly _cache: EntryPointCache;
 
@@ -77,6 +81,14 @@ export class TraceOrchestrator {
 
     const config = vscode.workspace.getConfiguration("mewraPounce");
     const maxDepth: number = config.get("maxDepth") ?? 12;
+    const shouldCache: boolean = config.get("cacheEntryPoints") ?? true;
+    const enabledFrameworks: string[] = config.get("frameworks") ?? [
+      "express",
+      "fastify",
+      "nestjs",
+      "nextjs",
+      "worker",
+    ];
 
     const visited = new Set<string>();
     const nodes: CallNode[] = [];
@@ -92,6 +104,23 @@ export class TraceOrchestrator {
       }
     };
 
+    const matchWithCache = (
+      item: vscode.CallHierarchyItem,
+    ): ReturnType<typeof matchEntryPoint> => {
+      const nodeId = toNodeId(item);
+      if (shouldCache && this._cache.has(nodeId)) {
+        return (
+          this._cache.get<ReturnType<typeof matchEntryPoint>>(nodeId) ?? null
+        );
+      }
+
+      const result = matchEntryPoint(item, enabledFrameworks);
+      if (shouldCache) {
+        this._cache.set(nodeId, result);
+      }
+      return result;
+    };
+
     const dfs = async (
       item: vscode.CallHierarchyItem,
       depth: number,
@@ -100,7 +129,7 @@ export class TraceOrchestrator {
       if (visited.has(nodeId) || depth > maxDepth) return;
       visited.add(nodeId);
 
-      const entryResult = matchEntryPoint(item);
+      const entryResult = matchWithCache(item);
       nodes.push(toCallNode(item, entryResult));
 
       if (entryResult !== null) return;
@@ -129,7 +158,7 @@ export class TraceOrchestrator {
         }
       }
 
-      // Supplementary reference lookup: finds callers in test files, Vue files, or non-hierarchy scopes
+      // MARK: Supplementary References
       if (!incoming || incoming.length === 0 || depth === 0) {
         try {
           const references = await vscode.commands.executeCommand<
@@ -178,6 +207,12 @@ export class TraceOrchestrator {
 
               if (!visited.has(callerId)) {
                 visited.add(callerId);
+
+                const refEntryResult = matchEntryPoint(
+                  { filePath: ref.uri.fsPath, symbolName: fileName },
+                  enabledFrameworks,
+                );
+
                 const callerNode: CallNode = {
                   id: callerId,
                   symbolName: isTest
@@ -185,20 +220,25 @@ export class TraceOrchestrator {
                     : fileName,
                   filePath: ref.uri.fsPath,
                   line: ref.range.start.line,
-                  isEntryPoint: false,
+                  isEntryPoint: refEntryResult !== null,
                 };
+
+                if (refEntryResult !== null) {
+                  callerNode.entryPointType = refEntryResult.type;
+                  callerNode.framework = refEntryResult.framework;
+                }
+
                 if (isTest) {
                   callerNode.isTestFile = true;
                 }
+
                 nodes.push(callerNode);
               }
 
               addEdge(callerId, nodeId);
             }
           }
-        } catch {
-          // Ignore reference provider errors
-        }
+        } catch {}
       }
     };
 

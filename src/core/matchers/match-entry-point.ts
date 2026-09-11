@@ -1,91 +1,41 @@
-import * as vscode from "vscode";
-
+// MARK: Match Entry Point
 import type { EntryPointMatch } from "../../shared/types";
+import { ALL_ADAPTERS } from "./adapters";
+import type { HierarchyTarget } from "./adapters";
 
-type MatchFn = (item: vscode.CallHierarchyItem) => EntryPointMatch | null;
+export type MatchableItem =
+  | HierarchyTarget
+  | {
+      uri: { fsPath: string };
+      name: string;
+      selectionRange?: { start: { line: number } };
+    };
 
-const expressAdapter: MatchFn = (item) => {
-  const filePath = item.uri.fsPath;
-  const name = item.name;
-
-  const routeMethodPattern = /^(app|router)\.(get|post|put|patch|delete|use)$/;
-  if (routeMethodPattern.test(name)) {
-    return { type: "route", framework: "express" };
+function toHierarchyTarget(item: MatchableItem): HierarchyTarget {
+  if ("filePath" in item) {
+    return item;
   }
 
-  if (filePath.includes("/routes/") || filePath.includes(".routes.")) {
-    return { type: "route", framework: "express" };
-  }
-
-  return null;
-};
-
-const fastifyAdapter: MatchFn = (item) => {
-  const name = item.name;
-
-  const fastifyPattern =
-    /^fastify\.(get|post|put|patch|delete|route|register)$/;
-  if (fastifyPattern.test(name)) {
-    return { type: "route", framework: "fastify" };
-  }
-
-  return null;
-};
-
-const nestjsAdapter: MatchFn = (item) => {
-  const filePath = item.uri.fsPath;
-
-  if (
-    filePath.includes(".controller.") ||
-    filePath.includes(".resolver.") ||
-    filePath.includes(".gateway.")
-  ) {
-    return { type: "route", framework: "nestjs" };
-  }
-
-  return null;
-};
-
-const nextjsAdapter: MatchFn = (item) => {
-  const filePath = item.uri.fsPath;
-  const name = item.name;
-
-  if (
-    filePath.match(/\/pages\/api\//) ||
-    filePath.match(/\/app\/.*\/route\.ts$/)
-  ) {
-    if (
-      name === "default" ||
-      /^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)$/.test(name)
-    ) {
-      return { type: "route", framework: "nextjs" };
-    }
-  }
-
-  return null;
-};
-
-const ADAPTERS: MatchFn[] = [
-  expressAdapter,
-  fastifyAdapter,
-  nestjsAdapter,
-  nextjsAdapter,
-];
+  return {
+    filePath: item.uri.fsPath,
+    symbolName: item.name,
+    line: item.selectionRange?.start.line,
+  };
+}
 
 export function matchEntryPoint(
-  item: vscode.CallHierarchyItem,
+  item: MatchableItem,
+  enabledFrameworks?: string[],
 ): EntryPointMatch | null {
-  const config = vscode.workspace.getConfiguration("mewraPounce");
-  const enabledFrameworks: string[] = config.get("frameworks") ?? [
-    "express",
-    "fastify",
-    "nestjs",
-    "nextjs",
-  ];
+  const target = toHierarchyTarget(item);
 
-  for (const adapter of ADAPTERS) {
-    const result = adapter(item);
-    if (result && enabledFrameworks.includes(result.framework)) {
+  for (const adapter of ALL_ADAPTERS) {
+    if (enabledFrameworks && !enabledFrameworks.includes(adapter.name)) {
+      continue;
+    }
+
+    const result = adapter.detect(target);
+    if (result) {
       return result;
     }
   }

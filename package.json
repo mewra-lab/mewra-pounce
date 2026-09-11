@@ -84,14 +84,16 @@
               "express",
               "fastify",
               "nestjs",
-              "nextjs"
+              "nextjs",
+              "worker"
             ]
           },
           "default": [
             "express",
             "fastify",
             "nestjs",
-            "nextjs"
+            "nextjs",
+            "worker"
           ],
           "description": "Frameworks to detect as entry points."
         },

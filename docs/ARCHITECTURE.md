@@ -64,7 +64,7 @@ mewra-pounce/
 │   │   ├── matchers/
 │   │   │   ├── match-entry-point.ts
 │   │   │   ├── entry-point-cache.ts
-│   │   │   └── adapters/           [future: one file per framework]
+│   │   │   └── adapters/          — express, fastify, nestjs, nextjs, worker
 │   │   └── export/
 │   │       └── mermaid-exporter.ts
 │   ├── shared/

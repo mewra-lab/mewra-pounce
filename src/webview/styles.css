@@ -201,6 +201,13 @@ body {
   border-color: rgba(245, 158, 11, 0.25);
 }
 
+.pounce-chip--blast {
+  color: #fef08a;
+  background: rgba(234, 179, 8, 0.15);
+  border-color: rgba(234, 179, 8, 0.35);
+  font-weight: 600;
+}
+
 .pounce-chip--muted {
   color: var(--vscode-disabledForeground, #6b7280);
 }
@@ -318,6 +325,10 @@ body {
   background: #64748b;
 }
 
+.pounce-dot--unresolved {
+  background: #ef4444;
+}
+
 /* MARK: Docked Bottom Inspector Bar */
 .pounce-inspector {
   position: absolute;
@@ -390,6 +401,12 @@ body {
   background: rgba(255, 255, 255, 0.08);
   color: var(--vscode-descriptionForeground, #858585);
   border: 1px solid var(--vscode-widget-border, #3c3c3c);
+}
+
+.pounce-badge--unresolved {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.4);
 }
 
 .pounce-inspector-name {

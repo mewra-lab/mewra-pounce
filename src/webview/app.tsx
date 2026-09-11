@@ -36,6 +36,7 @@ export function App({ vscode, logoUri }: Props) {
   const [state, setState] = useState<State>({ status: "idle" });
   const [selectedNode, setSelectedNode] = useState<NodeItem | null>(null);
   const [copiedToast, setCopiedToast] = useState(false);
+  const [routesOnly, setRoutesOnly] = useState(false);
 
   useEffect(() => {
     const handler = (event: MessageEvent) => {
@@ -94,9 +95,44 @@ export function App({ vscode, logoUri }: Props) {
     (n) => n.isEntryPoint && n.entryPointType === "route",
   );
   const workers = nodes.filter(
-    (n) => n.isEntryPoint && n.entryPointType === "worker",
+    (n) =>
+      n.isEntryPoint &&
+      (n.entryPointType === "worker" || n.entryPointType === "cron"),
   );
   const isLeaf = callerNodes.length === 0;
+
+  const displayedNodes = routesOnly
+    ? (() => {
+        const entryIds = new Set(
+          nodes.filter((n) => n.isEntryPoint).map((n) => n.id),
+        );
+        if (entryIds.size === 0) return nodes;
+
+        const forwardAdj = new Map<string, string[]>();
+        for (const e of edges) {
+          const list = forwardAdj.get(e.from) ?? [];
+          list.push(e.to);
+          forwardAdj.set(e.from, list);
+        }
+
+        const keep = new Set<string>([rootId]);
+        const queue = Array.from(entryIds);
+        for (const id of entryIds) keep.add(id);
+
+        while (queue.length > 0) {
+          const curr = queue.shift()!;
+          const targets = forwardAdj.get(curr) ?? [];
+          for (const target of targets) {
+            if (!keep.has(target)) {
+              keep.add(target);
+              queue.push(target);
+            }
+          }
+        }
+
+        return nodes.filter((n) => keep.has(n.id));
+      })()
+    : nodes;
 
   return (
     <div class={`pounce-root ${selectedNode ? "has-inspector" : ""}`}>
@@ -140,6 +176,19 @@ export function App({ vscode, logoUri }: Props) {
             </button>
 
             <button
+              id="btn-filter-routes"
+              class={`pounce-btn ${routesOnly ? "is-active" : ""}`}
+              title={
+                routesOnly
+                  ? "Show all callers"
+                  : "Filter to entry point paths only"
+              }
+              onClick={() => setRoutesOnly(!routesOnly)}
+            >
+              {routesOnly ? "All Callers" : "Routes Only"}
+            </button>
+
+            <button
               id="btn-copy-mermaid"
               class="pounce-btn pounce-btn--primary"
               title="Copy graph as Mermaid Markdown"
@@ -161,14 +210,12 @@ export function App({ vscode, logoUri }: Props) {
 
         <div class="pounce-header-bar">
           <div class="pounce-chips">
-            {routes.length > 0 && (
-              <span class="pounce-chip pounce-chip--route">
-                ● {routes.length} Route{routes.length !== 1 ? "s" : ""}
-              </span>
-            )}
-            {workers.length > 0 && (
-              <span class="pounce-chip pounce-chip--worker">
-                ● {workers.length} Worker{workers.length !== 1 ? "s" : ""}
+            {(routes.length > 0 || workers.length > 0) && (
+              <span class="pounce-chip pounce-chip--blast">
+                ⚠️ Impacts {routes.length} Route{routes.length !== 1 ? "s" : ""}
+                {workers.length > 0
+                  ? ` | ${workers.length} Worker${workers.length !== 1 ? "s" : ""}`
+                  : ""}
               </span>
             )}
             <span class="pounce-chip">
@@ -186,7 +233,7 @@ export function App({ vscode, logoUri }: Props) {
       {/* MARK: Graph Canvas */}
       <div class="pounce-canvas">
         <GraphView
-          nodes={nodes}
+          nodes={displayedNodes}
           edges={edges}
           rootId={rootId}
           onSelectNode={setSelectedNode}
@@ -203,18 +250,22 @@ export function App({ vscode, logoUri }: Props) {
                     ? "target"
                     : selectedNode.isEntryPoint
                       ? (selectedNode.entryPointType ?? "route")
-                      : selectedNode.isTestFile
-                        ? "test"
-                        : "caller"
+                      : selectedNode.isUnresolved
+                        ? "unresolved"
+                        : selectedNode.isTestFile
+                          ? "test"
+                          : "caller"
                 }`}
               >
                 {selectedNode.id === rootId
                   ? "TARGET"
                   : selectedNode.isEntryPoint
                     ? (selectedNode.entryPointType ?? "ROUTE").toUpperCase()
-                    : selectedNode.isTestFile
-                      ? "TEST"
-                      : "CALLER"}
+                    : selectedNode.isUnresolved
+                      ? "UNRESOLVED"
+                      : selectedNode.isTestFile
+                        ? "TEST"
+                        : "CALLER"}
               </span>
               <span class="pounce-inspector-name">
                 {selectedNode.symbolName}
@@ -265,6 +316,9 @@ export function App({ vscode, logoUri }: Props) {
           <span>
             <span class="pounce-dot pounce-dot--caller" /> Caller
           </span>
+          <span>
+            <span class="pounce-dot pounce-dot--unresolved" /> Unresolved
+          </span>
         </div>
 
         {/* Copied Toast */}
@@ -309,11 +363,17 @@ function GraphView({
         const isRoot = n.id === rootId;
         const isEntry = n.isEntryPoint;
         const isTest = n.isTestFile ?? false;
+        const isUnresolved = n.isUnresolved ?? false;
         let kind = "caller";
         if (isRoot) kind = "target";
         else if (isEntry && n.entryPointType === "route") kind = "route";
-        else if (isEntry && n.entryPointType === "worker") kind = "worker";
+        else if (
+          isEntry &&
+          (n.entryPointType === "worker" || n.entryPointType === "cron")
+        )
+          kind = "worker";
         else if (isTest) kind = "test";
+        else if (isUnresolved) kind = "unresolved";
 
         const shortFile = n.filePath.split("/").pop() ?? "";
         const label = isRoot
@@ -325,6 +385,7 @@ function GraphView({
             id: n.id,
             label,
             kind,
+            isUnresolved: isUnresolved ? 1 : 0,
             raw: n,
           },
         };
@@ -403,6 +464,13 @@ function GraphView({
             "border-color": "#8b5cf6",
             "border-width": 1.5,
             color: "#f5f3ff",
+          },
+        },
+        {
+          selector: "node[isUnresolved = 1], node[kind = 'unresolved']",
+          style: {
+            "border-color": "#ef4444",
+            "border-width": 2,
           },
         },
         {

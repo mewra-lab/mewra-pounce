@@ -4,10 +4,10 @@ export interface CallNode {
   filePath: string;
   line: number;
   isEntryPoint: boolean;
-  entryPointType?: "route" | "worker" | "cron" | "unknown";
-  framework?: string;
-  isUnresolved?: true;
-  isTestFile?: true;
+  entryPointType?: "route" | "worker" | "cron" | "unknown" | undefined;
+  framework?: string | undefined;
+  isUnresolved?: true | undefined;
+  isTestFile?: true | undefined;
 }
 
 export interface CallEdge {
@@ -21,11 +21,12 @@ export interface CallGraph {
   rootId: string;
 }
 
-export type FrameworkId = "express" | "fastify" | "nestjs" | "nextjs";
+export type FrameworkId =
+  "express" | "fastify" | "nestjs" | "nextjs" | "worker";
 
 export interface EntryPointMatch {
   type: "route" | "worker" | "cron";
-  method?: string;
-  path?: string;
+  method?: string | undefined;
+  path?: string | undefined;
   framework: FrameworkId;
 }
