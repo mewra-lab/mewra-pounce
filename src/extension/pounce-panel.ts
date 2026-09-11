@@ -126,6 +126,7 @@ export class PouncePanel {
       vscode.window.showInformationMessage(
         "Mewra Pounce: Mermaid copied to clipboard.",
       );
+      this._post({ kind: "mermaidText", text: mermaid });
     });
   }
 
@@ -157,6 +158,7 @@ export class PouncePanel {
       nodes,
       edges: graph.edges,
       rootId: graph.rootId,
+      hideTestFiles: this._hideTestFiles,
     });
   }
 
@@ -174,13 +176,7 @@ export class PouncePanel {
       vscode.Uri.joinPath(this._extensionUri, "dist", "webview", "index.js"),
     );
     const styleUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(
-        this._extensionUri,
-        "dist",
-        "webview",
-        "assets",
-        "styles.css",
-      ),
+      vscode.Uri.joinPath(this._extensionUri, "dist", "webview", "index.css"),
     );
 
     const csp = [
@@ -196,6 +192,7 @@ export class PouncePanel {
   <meta charset="UTF-8" />
   <meta http-equiv="Content-Security-Policy" content="${csp}" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="${styleUri}" />
   <title>Mewra Pounce</title>
 </head>
 <body>

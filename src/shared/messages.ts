@@ -44,6 +44,7 @@ export const ExtensionMessageSchema = z.discriminatedUnion("kind", [
       }),
     ),
     rootId: z.string(),
+    hideTestFiles: z.boolean().optional(),
   }),
   z.object({
     kind: z.literal("loading"),

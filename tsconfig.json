@@ -10,6 +10,8 @@
     "exactOptionalPropertyTypes": true,
     "useUnknownInCatchVariables": true,
     "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "noEmit": true,
     "jsx": "react-jsx",

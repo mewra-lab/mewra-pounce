@@ -16,3 +16,4 @@ await cp(
   join(root, "assets", "brand", "mewra-dark.svg"),
   join(dest, "mewra-dark.svg"),
 );
+await cp(join(root, "src", "webview", "styles.css"), join(dest, "styles.css"));
