@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./assets/brand/mewra-logo.svg" width="84" height="84" alt="Mewra Pounce Logo" />
+</p>
+
 # Mewra Pounce — Reverse Call Trace
 
 > **See every route that can reach your function — at a glance.**
@@ -29,9 +33,9 @@ Mewra Pounce traces:  validateUserInput()
 
 - **One shortcut** — `Alt+T` on any function name opens the graph
 - **Blast radius summary** — _⚠ Impacts 4 API Routes | 1 Background Worker_
-- **Framework detection** — Express, Fastify, NestJS, Next.js App Router, Next.js Pages Router
+- **Framework detection** — Express, Fastify, NestJS, Next.js App Router, Next.js Pages Router, BullMQ & Cron Workers
 - **Interactive graph** — pan, zoom, click any node to jump to that line
-- **Toggle test files** — hide or show test file nodes on the fly
+- **Filter controls** — toggle test files (`Alt+Shift+T`) or filter to entry point routes only
 - **Mermaid export** — one click to copy a Mermaid diagram ready for your PR
 - **Local-first** — no AI, no network calls, no telemetry, zero cloud dependency
 
@@ -96,6 +100,7 @@ ext install mewra.pounce
 | **NestJS**               | Files ending in `.controller.ts` / `.resolver.ts` / `.gateway.ts` |
 | **Next.js App Router**   | `route.ts` files exporting `GET`/`POST`/…                         |
 | **Next.js Pages Router** | `pages/api/**/*.ts` exporting `default`                           |
+| **Workers & Cron Jobs**  | BullMQ, Inngest, `*.worker.ts`, `*.cron.ts`, `@Cron` handlers     |
 
 ---
 
