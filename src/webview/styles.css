@@ -1,0 +1,167 @@
+:root {
+  --pounce-bg: var(--vscode-editor-background, #1e1e1e);
+  --pounce-surface: var(--vscode-editorWidget-background, #252526);
+  --pounce-border: var(--vscode-editorWidget-border, #454545);
+  --pounce-fg: var(--vscode-editor-foreground, #d4d4d4);
+  --pounce-fg-muted: var(--vscode-disabledForeground, #858585);
+  --pounce-accent: var(--vscode-focusBorder, #007acc);
+  --pounce-btn-bg: var(--vscode-button-background, #0e639c);
+  --pounce-btn-fg: var(--vscode-button-foreground, #ffffff);
+  --pounce-btn-hover: var(--vscode-button-hoverBackground, #1177bb);
+  --pounce-badge-route: #22c55e;
+  --pounce-badge-worker: #f59e0b;
+  --pounce-radius: 4px;
+  --pounce-font: var(
+    --vscode-font-family,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif
+  );
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  background: var(--pounce-bg);
+  color: var(--pounce-fg);
+  font-family: var(--pounce-font);
+  font-size: 13px;
+}
+
+.pounce-root {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.pounce-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--pounce-surface);
+  border-bottom: 1px solid var(--pounce-border);
+  flex-shrink: 0;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pounce-blast-radius {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.pounce-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.pounce-badge--route {
+  background: color-mix(in srgb, var(--pounce-badge-route) 20%, transparent);
+  color: var(--pounce-badge-route);
+  border: 1px solid
+    color-mix(in srgb, var(--pounce-badge-route) 40%, transparent);
+}
+
+.pounce-badge--worker {
+  background: color-mix(in srgb, var(--pounce-badge-worker) 20%, transparent);
+  color: var(--pounce-badge-worker);
+  border: 1px solid
+    color-mix(in srgb, var(--pounce-badge-worker) 40%, transparent);
+}
+
+.pounce-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.pounce-btn {
+  padding: 4px 10px;
+  border-radius: var(--pounce-radius);
+  border: 1px solid var(--pounce-border);
+  background: transparent;
+  color: var(--pounce-fg);
+  font-size: 11px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.pounce-btn:hover {
+  background: color-mix(in srgb, var(--pounce-accent) 15%, transparent);
+  border-color: var(--pounce-accent);
+}
+
+.pounce-btn--primary {
+  background: var(--pounce-btn-bg);
+  color: var(--pounce-btn-fg);
+  border-color: var(--pounce-btn-bg);
+}
+
+.pounce-btn--primary:hover {
+  background: var(--pounce-btn-hover);
+  border-color: var(--pounce-btn-hover);
+}
+
+.pounce-graph {
+  flex: 1;
+  overflow: hidden;
+}
+
+.pounce-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  gap: 16px;
+  color: var(--pounce-fg-muted);
+}
+
+.pounce-spinner {
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--pounce-border);
+  border-top-color: var(--pounce-accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.pounce-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  gap: 12px;
+  padding: 24px;
+  text-align: center;
+  color: var(--pounce-fg-muted);
+}
+
+.pounce-error-icon {
+  font-size: 32px;
+  color: #ef4444;
+}

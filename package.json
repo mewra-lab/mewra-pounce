@@ -1,0 +1,131 @@
+{
+  "name": "mewra-pounce",
+  "displayName": "Mewra Pounce — Reverse Call Trace",
+  "description": "Trace callers backward to every entry point that touches a function.",
+  "version": "0.0.1",
+  "publisher": "mewra",
+  "license": "MIT",
+  "private": true,
+  "packageManager": "pnpm@12.3.4",
+  "engines": {
+    "vscode": "^1.137.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "icon": "assets/brand/icon.png",
+  "main": "./dist/extension.cjs",
+  "contributes": {
+    "commands": [
+      {
+        "command": "mewra-pounce.trace",
+        "title": "Trace Callers",
+        "category": "Mewra Pounce"
+      },
+      {
+        "command": "mewra-pounce.toggleTestFiles",
+        "title": "Toggle Test Files in Graph",
+        "category": "Mewra Pounce"
+      },
+      {
+        "command": "mewra-pounce.exportMermaid",
+        "title": "Copy Graph as Mermaid",
+        "category": "Mewra Pounce"
+      },
+      {
+        "command": "mewra-pounce.clearCache",
+        "title": "Clear Entry Point Cache",
+        "category": "Mewra Pounce"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "mewra-pounce.trace",
+        "key": "alt+t",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "mewra-pounce.toggleTestFiles",
+        "key": "alt+shift+t",
+        "when": "editorTextFocus"
+      }
+    ],
+    "configuration": {
+      "title": "Mewra Pounce",
+      "properties": {
+        "mewraPounce.maxDepth": {
+          "type": "number",
+          "default": 12,
+          "description": "Maximum depth for reverse call traversal."
+        },
+        "mewraPounce.hideTestFilesByDefault": {
+          "type": "boolean",
+          "default": true,
+          "description": "Hide test files from the graph by default."
+        },
+        "mewraPounce.frameworks": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "express",
+              "fastify",
+              "nestjs",
+              "nextjs"
+            ]
+          },
+          "default": [
+            "express",
+            "fastify",
+            "nestjs",
+            "nextjs"
+          ],
+          "description": "Frameworks to detect as entry points."
+        },
+        "mewraPounce.cacheEntryPoints": {
+          "type": "boolean",
+          "default": true,
+          "description": "Cache detected entry points per workspace."
+        }
+      }
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,mjs,json,css,md}": "prettier --write"
+  },
+  "scripts": {
+    "clean": "node scripts/clean.mjs",
+    "check": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "copy:assets": "node scripts/copy-assets.mjs",
+    "build:extension": "esbuild src/extension/extension.ts --bundle --platform=node --format=cjs --external:vscode --outfile=dist/extension.cjs --sourcemap",
+    "build:webview": "esbuild src/webview/index.tsx --bundle --platform=browser --format=iife --outfile=dist/webview/index.js --sourcemap --loader:.css=css",
+    "build": "pnpm clean && pnpm copy:assets && pnpm build:extension && pnpm build:webview",
+    "test": "vitest run",
+    "prepare": "husky",
+    "validate": "pnpm format:check && pnpm check && pnpm test && pnpm build"
+  },
+  "dependencies": {
+    "cytoscape": "^3.34.3",
+    "preact": "^10.29.8",
+    "ts-morph": "^24.0.0",
+    "zod": "^4.6.1"
+  },
+  "devDependencies": {
+    "@types/cytoscape": "^3.31.0",
+    "@types/cytoscape-dagre": "^2.3.4",
+    "@types/node": "^24.13.4",
+    "@types/vscode": "^1.137.0",
+    "@vscode/test-cli": "^0.0.15",
+    "@vscode/test-electron": "^3.1.0",
+    "@vscode/vsce": "^3.9.2",
+    "cytoscape-dagre": "^4.0.1",
+    "esbuild": "^0.28.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.5.0",
+    "prettier": "^3.9.6",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.0"
+  }
+}
