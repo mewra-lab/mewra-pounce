@@ -54,6 +54,15 @@
         "when": "editorTextFocus"
       }
     ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "mewra-pounce.trace",
+          "when": "editorTextFocus",
+          "group": "navigation@10"
+        }
+      ]
+    },
     "configuration": {
       "title": "Mewra Pounce",
       "properties": {
