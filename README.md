@@ -4,11 +4,18 @@
 
 # Mewra Pounce — Reverse Call Trace
 
+<p align="center">
+  <a href="https://github.com/mewra-lab/mewra-pounce"><img src="https://img.shields.io/badge/GitHub-mewra--lab%2Fmewra--pounce-181717?logo=github" alt="GitHub Repository" /></a>
+  <a href="https://github.com/mewra-lab/mewra-pounce/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License" /></a>
+  <a href="https://marketplace.visualstudio.com"><img src="https://img.shields.io/badge/VS_Code-Marketplace-007ACC?logo=visualstudiocode" alt="VS Code Marketplace" /></a>
+</p>
+
 > **See every route that can reach your function — at a glance.**
 
 Mewra Pounce is an open-source VS Code extension that walks the reverse call hierarchy of any function and renders an interactive directed graph, highlighting every API route, background worker, and cron job that can reach it.
 
 Part of the [Mewra](https://mewra.app) ecosystem alongside `moondi` and `mewra-dock`.
+Source code: [github.com/mewra-lab/mewra-pounce](https://github.com/mewra-lab/mewra-pounce)
 
 ---
 
@@ -24,13 +31,16 @@ VS Code's built-in Call Hierarchy is a text tree. You expand it level by level t
 
 Mewra Pounce does the traversal for you and renders the result as a navigable graph — in seconds.
 
-```
-You place cursor on:  validateUserInput()
+<p align="center">
+  <img src="./assets/blast-radius.png" width="100%" alt="Mewra Pounce Blast Radius Detection" />
+</p>
 
-Mewra Pounce traces:  validateUserInput()
-                       └── createUser()
-                            ├── POST /api/users          ← Express route
-                            └── QueueWorker: onUserCreated  ← BullMQ worker
+```
+You place cursor on:  expireUnpaidBookings()
+
+Mewra Pounce traces:  expireUnpaidBookings()
+                       ├── booking-expiration.controller.ts  ← API Route (Impacts 2 Routes)
+                       └── runCronExpiration                 ← Cron Job
 ```
 
 ---
@@ -70,7 +80,7 @@ ext install mewra.pounce
 
 ### From a release VSIX
 
-1. Download `mewra-pounce-x.y.z.vsix` from [GitHub Releases](https://github.com/mewra/pounce/releases)
+1. Download `mewra-pounce-x.y.z.vsix` from [GitHub Releases](https://github.com/mewra-lab/mewra-pounce/releases)
 2. In VS Code: `Extensions → ··· → Install from VSIX…`
 
 ---
