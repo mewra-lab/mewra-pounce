@@ -12,6 +12,8 @@ export { ginAdapter } from "./gin";
 export { echoAdapter } from "./echo";
 export { chiAdapter } from "./chi";
 export { nethttpAdapter } from "./nethttp";
+export { pythonAdapter } from "./python";
+export { goAdapter } from "./go";
 
 import { chiAdapter } from "./chi";
 import { djangoAdapter } from "./django";
@@ -21,9 +23,11 @@ import { fastapiAdapter } from "./fastapi";
 import { fastifyAdapter } from "./fastify";
 import { flaskAdapter } from "./flask";
 import { ginAdapter } from "./gin";
+import { goAdapter } from "./go";
 import { nestjsAdapter } from "./nestjs";
 import { nextjsAdapter } from "./nextjs";
 import { nethttpAdapter } from "./nethttp";
+import { pythonAdapter } from "./python";
 import type { FrameworkAdapter } from "./types";
 import { workerAdapter } from "./worker";
 
@@ -40,4 +44,6 @@ export const ALL_ADAPTERS: readonly FrameworkAdapter[] = [
   echoAdapter,
   chiAdapter,
   nethttpAdapter,
+  pythonAdapter,
+  goAdapter,
 ] as const;

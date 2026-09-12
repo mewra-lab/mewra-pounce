@@ -91,4 +91,28 @@ describe("matchEntryPoint", () => {
       method: "GET",
     });
   });
+
+  it("dispatches to plain python adapter", () => {
+    const result = matchEntryPoint({
+      filePath: "/src/cli.py",
+      symbolName: "main",
+    });
+
+    expect(result).toEqual({
+      type: "route",
+      framework: "python",
+    });
+  });
+
+  it("dispatches to plain go adapter", () => {
+    const result = matchEntryPoint({
+      filePath: "/cmd/main.go",
+      symbolName: "main",
+    });
+
+    expect(result).toEqual({
+      type: "route",
+      framework: "go",
+    });
+  });
 });

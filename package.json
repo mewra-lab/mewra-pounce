@@ -92,7 +92,9 @@
               "gin",
               "echo",
               "chi",
-              "nethttp"
+              "nethttp",
+              "python",
+              "go"
             ]
           },
           "default": [
@@ -107,7 +109,9 @@
             "gin",
             "echo",
             "chi",
-            "nethttp"
+            "nethttp",
+            "python",
+            "go"
           ],
           "description": "Frameworks to detect as entry points."
         },

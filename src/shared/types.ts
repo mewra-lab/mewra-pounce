@@ -33,7 +33,9 @@ export type FrameworkId =
   | "gin"
   | "echo"
   | "chi"
-  | "nethttp";
+  | "nethttp"
+  | "python"
+  | "go";
 
 export interface EntryPointMatch {
   type: "route" | "worker" | "cron";

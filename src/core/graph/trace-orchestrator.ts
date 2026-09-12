@@ -75,8 +75,17 @@ export class TraceOrchestrator {
     >("vscode.prepareCallHierarchy", document.uri, position);
 
     if (!items || items.length === 0) {
+      const isPy =
+        document.languageId === "python" || document.fileName.endsWith(".py");
+      const isGo =
+        document.languageId === "go" || document.fileName.endsWith(".go");
+      const extraHint = isPy
+        ? " (Ensure cursor is on a def/class and Python language server is active)"
+        : isGo
+          ? " (Ensure cursor is on a func and Go language server is active)"
+          : "";
       throw new Error(
-        "No call hierarchy item found at cursor. Place your cursor on a function name.",
+        `No call hierarchy item found at cursor. Place your cursor on a function or method name.${extraHint}`,
       );
     }
 
@@ -99,6 +108,8 @@ export class TraceOrchestrator {
       "echo",
       "chi",
       "nethttp",
+      "python",
+      "go",
     ];
 
     const visited = new Set<string>();
