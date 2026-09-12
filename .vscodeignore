@@ -22,3 +22,4 @@ SPEC.md
 **/*.map
 node_modules/**
 *.vsix
+landing/**

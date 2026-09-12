@@ -5,16 +5,17 @@
 # Mewra Pounce — Reverse Call Trace
 
 <p align="center">
+  <a href="https://pounce.mewra.app"><img src="https://img.shields.io/badge/website-pounce.mewra.app-6366f1" alt="Website" /></a>
   <a href="https://github.com/mewra-lab/mewra-pounce"><img src="https://img.shields.io/badge/GitHub-mewra--lab%2Fmewra--pounce-181717?logo=github" alt="GitHub Repository" /></a>
   <a href="https://github.com/mewra-lab/mewra-pounce/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License" /></a>
-  <a href="https://marketplace.visualstudio.com"><img src="https://img.shields.io/badge/VS_Code-Marketplace-007ACC?logo=visualstudiocode" alt="VS Code Marketplace" /></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=mewra.mewra-pounce"><img src="https://img.shields.io/badge/VS_Code-Marketplace-007ACC?logo=visualstudiocode" alt="VS Code Marketplace" /></a>
 </p>
 
 > **See every route that can reach your function — at a glance.**
 
 Mewra Pounce is an open-source VS Code extension that walks the reverse call hierarchy of any function and renders an interactive directed graph, highlighting every API route, background worker, and cron job that can reach it.
 
-Part of the [Mewra](https://mewra.app) ecosystem alongside `moondi` and `mewra-dock`.
+Website: [pounce.mewra.app](https://pounce.mewra.app) · Part of the [Mewra](https://github.com/mewra-lab) developer tooling ecosystem.  
 Source code: [github.com/mewra-lab/mewra-pounce](https://github.com/mewra-lab/mewra-pounce)
 
 ---
@@ -35,12 +36,14 @@ Mewra Pounce does the traversal for you and renders the result as a navigable gr
   <img src="./assets/blast-radius.png" width="100%" alt="Mewra Pounce Blast Radius Detection" />
 </p>
 
-```
-You place cursor on:  expireUnpaidBookings()
+```text
+You place cursor on:  discordLogger.error()
 
-Mewra Pounce traces:  expireUnpaidBookings()
-                       ├── booking-expiration.controller.ts  ← API Route (Impacts 2 Routes)
-                       └── runCronExpiration                 ← Cron Job
+Mewra Pounce traces:  error() (discord-logger.service.ts:118)
+                       ├── auth.controller.ts (credentialLogin, verifyPhoneOtp)
+                       ├── booking-expiration.controller.ts (runCronExpiration)
+                       └── payment-recovery.controller.ts (runCronReconciliation)
+                       ⚠ Impacts 4 Routes | 27 Callers
 ```
 
 ---
@@ -70,18 +73,24 @@ Mewra Pounce traces:  expireUnpaidBookings()
 
 ## Install
 
-### From the VS Code Marketplace _(coming soon)_
+### From the VS Code Marketplace
 
-Search `Mewra Pounce` in the Extensions panel or run:
+Search `Mewra Pounce` in the Extensions panel (`Ctrl+Shift+X` / `Cmd+Shift+X`), or launch Quick Open (`Ctrl+P` / `Cmd+P`) and paste:
 
+```bash
+ext install mewra.mewra-pounce
 ```
-ext install mewra.pounce
+
+Or install via terminal:
+
+```bash
+code --install-extension mewra.mewra-pounce
 ```
 
 ### From a release VSIX
 
 1. Download `mewra-pounce-x.y.z.vsix` from [GitHub Releases](https://github.com/mewra-lab/mewra-pounce/releases)
-2. In VS Code: `Extensions → ··· → Install from VSIX…`
+2. In VS Code: open Extensions panel (`Ctrl+Shift+X` / `Cmd+Shift+X`) → `···` (Views and More Actions) → `Install from VSIX…`
 
 ---
 

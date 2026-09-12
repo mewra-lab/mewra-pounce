@@ -10,7 +10,7 @@
     "type": "git",
     "url": "https://github.com/mewra-lab/mewra-pounce.git"
   },
-  "homepage": "https://github.com/mewra-lab/mewra-pounce#readme",
+  "homepage": "https://pounce.mewra.app",
   "bugs": {
     "url": "https://github.com/mewra-lab/mewra-pounce/issues"
   },
@@ -170,7 +170,8 @@
     "validate": "pnpm format:check && pnpm check && pnpm test && pnpm build",
     "vscode:prepublish": "pnpm build",
     "package": "vsce package --no-dependencies",
-    "publish:marketplace": "vsce publish --no-dependencies"
+    "publish:marketplace": "vsce publish --no-dependencies",
+    "deploy:landing": "npx wrangler deploy --config landing/wrangler.toml"
   },
   "dependencies": {
     "cytoscape": "^3.34.3",
