@@ -12,6 +12,12 @@ Part of the [Mewra](https://mewra.app) ecosystem alongside `moondi` and `mewra-d
 
 ---
 
+<p align="center">
+  <img src="./assets/preview.png" width="100%" alt="Mewra Pounce — Reverse Call Trace in action" />
+</p>
+
+---
+
 ## Why
 
 VS Code's built-in Call Hierarchy is a text tree. You expand it level by level to understand the full blast radius of a change. For deeply nested service code this takes minutes.
@@ -31,12 +37,12 @@ Mewra Pounce traces:  validateUserInput()
 
 ## Features
 
-- **One shortcut** — `Alt+T` on any function name opens the graph
+- **One shortcut or right-click** — `Alt+T` / `⌥T` or right-click `Trace Callers` on any function name
 - **Blast radius summary** — _⚠ Impacts 4 API Routes | 1 Background Worker_
-- **Framework detection** — Express, Fastify, NestJS, Next.js App Router, Next.js Pages Router, BullMQ & Cron Workers
-- **Interactive graph** — pan, zoom, click any node to jump to that line
+- **Multi-language & framework detection** — TS/JS (Express, Fastify, NestJS, Next.js), Python (FastAPI, Flask, Django, Celery), Go (Gin, Echo, Chi, `net/http`), Rust (Actix, Axum, Rocket), C/C++ (Crow, Drogon, Embedded), Java/Kotlin (Spring Boot), C# (ASP.NET Core), PHP (Laravel, Symfony), Swift (Vapor, iOS), Flutter (Dart)
+- **Interactive graph** — pan, zoom, click any node to view file/line in the inspector and jump directly to editor
 - **Filter controls** — toggle test files (`Alt+Shift+T`) or filter to entry point routes only
-- **Mermaid export** — one click to copy a Mermaid diagram ready for your PR
+- **Mermaid export** — one click to copy a Mermaid diagram ready for your PR description
 - **Local-first** — no AI, no network calls, no telemetry, zero cloud dependency
 
 ---

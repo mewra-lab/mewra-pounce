@@ -15,7 +15,19 @@
     "vscode": "^1.137.0"
   },
   "categories": [
+    "Programming Languages",
+    "Visualization",
     "Other"
+  ],
+  "keywords": [
+    "call hierarchy",
+    "call graph",
+    "reverse call hierarchy",
+    "trace callers",
+    "architecture",
+    "blast radius",
+    "refactoring",
+    "mermaid"
   ],
   "icon": "assets/brand/icon.png",
   "main": "./dist/extension.cjs",
