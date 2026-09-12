@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/brand/mewra-logo.svg" width="84" height="84" alt="Mewra Pounce Logo" />
+  <img src="./assets/brand/icon.png" width="84" height="84" alt="Mewra Pounce Logo" />
 </p>
 
 # Mewra Pounce — Reverse Call Trace

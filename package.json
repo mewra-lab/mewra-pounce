@@ -2,9 +2,10 @@
   "name": "mewra-pounce",
   "displayName": "Mewra Pounce — Reverse Call Trace",
   "description": "Trace callers backward to every entry point that touches a function.",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "publisher": "mewra",
   "license": "MIT",
+  "pricing": "Free",
   "repository": {
     "type": "git",
     "url": "https://github.com/mewra-lab/mewra-pounce.git"
@@ -13,7 +14,6 @@
   "bugs": {
     "url": "https://github.com/mewra-lab/mewra-pounce/issues"
   },
-  "private": true,
   "packageManager": "pnpm@12.3.4",
   "engines": {
     "vscode": "^1.137.0"
@@ -167,7 +167,10 @@
     "build": "pnpm clean && pnpm copy:assets && pnpm build:extension && pnpm build:webview",
     "test": "vitest run",
     "prepare": "husky",
-    "validate": "pnpm format:check && pnpm check && pnpm test && pnpm build"
+    "validate": "pnpm format:check && pnpm check && pnpm test && pnpm build",
+    "vscode:prepublish": "pnpm build",
+    "package": "vsce package --no-dependencies",
+    "publish:marketplace": "vsce publish --no-dependencies"
   },
   "dependencies": {
     "cytoscape": "^3.34.3",
