@@ -15,6 +15,14 @@ const TEST_FILE_PATTERNS = [
   /(?:^|\/)test_[^/]+\.py$/,
   /[^/]+_test\.py$/,
   /[^/]+_test\.go$/,
+  /[^/]+_test\.rs$/,
+  /[^/]+_test\.(?:c|cpp|cc|cxx)$/,
+  /(?:^|\/)test_[^/]+\.(?:c|cpp|cc|cxx)$/,
+  /(?:^|\/)[^/]+(?:Test|Tests|TestCase)\.(?:java|kt)$/,
+  /(?:^|\/)[^/]+(?:Test|Tests)\.cs$/,
+  /(?:^|\/)[^/]+Test\.php$/,
+  /(?:^|\/)[^/]+(?:Test|Tests)\.swift$/,
+  /[^/]+_test\.dart$/,
 ];
 
 function isTestFile(filePath: string): boolean {
@@ -75,15 +83,42 @@ export class TraceOrchestrator {
     >("vscode.prepareCallHierarchy", document.uri, position);
 
     if (!items || items.length === 0) {
-      const isPy =
-        document.languageId === "python" || document.fileName.endsWith(".py");
-      const isGo =
-        document.languageId === "go" || document.fileName.endsWith(".go");
+      const fileName = document.fileName;
+      const langId = document.languageId;
+      const isPy = langId === "python" || fileName.endsWith(".py");
+      const isGo = langId === "go" || fileName.endsWith(".go");
+      const isRust = langId === "rust" || fileName.endsWith(".rs");
+      const isC =
+        langId === "c" ||
+        langId === "cpp" ||
+        /\.(?:c|cpp|cc|cxx|h|hpp)$/i.test(fileName);
+      const isJava =
+        langId === "java" ||
+        langId === "kotlin" ||
+        /\.(?:java|kt)$/i.test(fileName);
+      const isCSharp = langId === "csharp" || fileName.endsWith(".cs");
+      const isPhp = langId === "php" || fileName.endsWith(".php");
+      const isSwift = langId === "swift" || fileName.endsWith(".swift");
+      const isDart = langId === "dart" || fileName.endsWith(".dart");
       const extraHint = isPy
         ? " (Ensure cursor is on a def/class and Python language server is active)"
         : isGo
           ? " (Ensure cursor is on a func and Go language server is active)"
-          : "";
+          : isRust
+            ? " (Ensure cursor is on a fn and rust-analyzer is active)"
+            : isC
+              ? " (Ensure cursor is on a function and clangd/C++ extension is active)"
+              : isJava
+                ? " (Ensure cursor is on a method and Language Support for Java is active)"
+                : isCSharp
+                  ? " (Ensure cursor is on a method and C# extension is active)"
+                  : isPhp
+                    ? " (Ensure cursor is on a function/method and PHP language server is active)"
+                    : isSwift
+                      ? " (Ensure cursor is on a func/method and SourceKit-LSP is active)"
+                      : isDart
+                        ? " (Ensure cursor is on a function/method and Dart Analysis Server is active)"
+                        : "";
       throw new Error(
         `No call hierarchy item found at cursor. Place your cursor on a function or method name.${extraHint}`,
       );
@@ -110,6 +145,13 @@ export class TraceOrchestrator {
       "nethttp",
       "python",
       "go",
+      "rust",
+      "c",
+      "java",
+      "csharp",
+      "php",
+      "swift",
+      "dart",
     ];
 
     const visited = new Set<string>();

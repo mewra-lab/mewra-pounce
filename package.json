@@ -94,7 +94,14 @@
               "chi",
               "nethttp",
               "python",
-              "go"
+              "go",
+              "rust",
+              "c",
+              "java",
+              "csharp",
+              "php",
+              "swift",
+              "dart"
             ]
           },
           "default": [
@@ -111,7 +118,14 @@
             "chi",
             "nethttp",
             "python",
-            "go"
+            "go",
+            "rust",
+            "c",
+            "java",
+            "csharp",
+            "php",
+            "swift",
+            "dart"
           ],
           "description": "Frameworks to detect as entry points."
         },

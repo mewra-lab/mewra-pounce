@@ -2,6 +2,8 @@
 import type { EntryPointMatch } from "../../../shared/types";
 import type { FrameworkAdapter, HierarchyTarget } from "./types";
 
+const JS_TS_FILE_PATTERN = /\.(?:ts|tsx|js|jsx|mjs|cjs)$/i;
+
 const ROUTE_METHOD_PATTERN =
   /^(?:app|router)\.(get|post|put|patch|delete|use)$/i;
 
@@ -10,7 +12,7 @@ export const expressAdapter: FrameworkAdapter = {
   detect(target: HierarchyTarget): EntryPointMatch | null {
     const { filePath, symbolName } = target;
 
-    if (filePath.endsWith(".go") || filePath.endsWith(".py")) {
+    if (!JS_TS_FILE_PATTERN.test(filePath)) {
       return null;
     }
 

@@ -115,4 +115,93 @@ describe("matchEntryPoint", () => {
       framework: "go",
     });
   });
+
+  it("dispatches to rust adapter", () => {
+    const result = matchEntryPoint({
+      filePath: "/src/main.rs",
+      symbolName: "main",
+    });
+
+    expect(result).toEqual({
+      type: "route",
+      framework: "rust",
+    });
+  });
+
+  it("dispatches to c adapter", () => {
+    const result = matchEntryPoint({
+      filePath: "/src/main.cpp",
+      symbolName: "main",
+    });
+
+    expect(result).toEqual({
+      type: "route",
+      framework: "c",
+    });
+  });
+
+  it("dispatches to java adapter", () => {
+    const result = matchEntryPoint({
+      filePath: "/src/UserController.java",
+      symbolName: '@GetMapping("/users")',
+    });
+
+    expect(result).toEqual({
+      type: "route",
+      framework: "java",
+      method: "GET",
+    });
+  });
+
+  it("dispatches to csharp adapter", () => {
+    const result = matchEntryPoint({
+      filePath: "/src/UserController.cs",
+      symbolName: '[HttpGet("api/users")]',
+    });
+
+    expect(result).toEqual({
+      type: "route",
+      framework: "csharp",
+      method: "GET",
+    });
+  });
+
+  it("dispatches to php adapter", () => {
+    const result = matchEntryPoint({
+      filePath: "/routes/api.php",
+      symbolName: "Route::get",
+    });
+
+    expect(result).toEqual({
+      type: "route",
+      framework: "php",
+      method: "GET",
+    });
+  });
+
+  it("dispatches to swift adapter", () => {
+    const result = matchEntryPoint({
+      filePath: "/Sources/App/routes.swift",
+      symbolName: "app.get",
+    });
+
+    expect(result).toEqual({
+      type: "route",
+      framework: "swift",
+      method: "GET",
+    });
+  });
+
+  it("dispatches to dart adapter", () => {
+    const result = matchEntryPoint({
+      filePath: "/bin/server.dart",
+      symbolName: "router.get",
+    });
+
+    expect(result).toEqual({
+      type: "route",
+      framework: "dart",
+      method: "GET",
+    });
+  });
 });

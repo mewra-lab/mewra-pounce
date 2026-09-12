@@ -35,7 +35,14 @@ export type FrameworkId =
   | "chi"
   | "nethttp"
   | "python"
-  | "go";
+  | "go"
+  | "rust"
+  | "c"
+  | "java"
+  | "csharp"
+  | "php"
+  | "swift"
+  | "dart";
 
 export interface EntryPointMatch {
   type: "route" | "worker" | "cron";

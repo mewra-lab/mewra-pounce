@@ -93,21 +93,30 @@ ext install mewra.pounce
 
 ## Supported frameworks (v1)
 
-| Framework                | What is detected                                                  |
-| ------------------------ | ----------------------------------------------------------------- |
-| **Express**              | `app.get/post/put/patch/delete/use`, `router.*`                   |
-| **Fastify**              | `fastify.get/post/route/register`                                 |
-| **NestJS**               | Files ending in `.controller.ts` / `.resolver.ts` / `.gateway.ts` |
-| **Next.js App Router**   | `route.ts` files exporting `GET`/`POST`/…                         |
-| **Next.js Pages Router** | `pages/api/**/*.ts` exporting `default`                           |
-| **Workers & Cron Jobs**  | BullMQ, Inngest, Celery, `*.worker.*`, `*.cron.*`, `@Cron`        |
-| **FastAPI (Python)**     | `@app.get/post/...`, `@router.*`, `routers/`, `endpoints/`        |
-| **Flask (Python)**       | `@app.route`, `@bp.route`, blueprints, views                      |
-| **Django (Python)**      | `urls.py` patterns, `views.py` `View` / `ViewSet` / `APIView`     |
-| **Gin (Go)**             | `router.GET/POST/...`, `group.*`, handlers with `*gin.Context`    |
-| **Echo (Go)**            | `e.GET/POST/...`, `g.*`, handlers with `echo.Context`             |
-| **Chi (Go)**             | `r.Get/Post/...`, `r.Route`, `r.Mount`                            |
-| **Standard net/http**    | `http.HandleFunc`, `http.Handle`, `ServeHTTP`                     |
+| Framework                | What is detected                                                              |
+| ------------------------ | ----------------------------------------------------------------------------- |
+| **Express**              | `app.get/post/put/patch/delete/use`, `router.*`                               |
+| **Fastify**              | `fastify.get/post/route/register`                                             |
+| **NestJS**               | Files ending in `.controller.ts` / `.resolver.ts` / `.gateway.ts`             |
+| **Next.js App Router**   | `route.ts` files exporting `GET`/`POST`/…                                     |
+| **Next.js Pages Router** | `pages/api/**/*.ts` exporting `default`                                       |
+| **Workers & Cron Jobs**  | BullMQ, Inngest, Celery, `*.worker.*`, `*.cron.*`, `@Cron`                    |
+| **FastAPI (Python)**     | `@app.get/post/...`, `@router.*`, `routers/`, `endpoints/`                    |
+| **Flask (Python)**       | `@app.route`, `@bp.route`, blueprints, views                                  |
+| **Django (Python)**      | `urls.py` patterns, `views.py` `View` / `ViewSet` / `APIView`                 |
+| **Gin (Go)**             | `router.GET/POST/...`, `group.*`, handlers with `*gin.Context`                |
+| **Echo (Go)**            | `e.GET/POST/...`, `g.*`, handlers with `echo.Context`                         |
+| **Chi (Go)**             | `r.Get/Post/...`, `r.Route`, `r.Mount`                                        |
+| **Standard net/http**    | `http.HandleFunc`, `http.Handle`, `ServeHTTP`                                 |
+| **Plain Python / CLI**   | `main.py`, `cli.py`, `def main()`, `@click`, `typer`                          |
+| **Plain Go**             | `main.go`, `func main()`                                                      |
+| **Rust**                 | `main.rs`, `fn main()`, Actix-web, Axum, Rocket macros                        |
+| **C / C++**              | `main.c/cpp`, `main()`, Embedded `app_main`, Crow, Drogon                     |
+| **Java / Kotlin**        | Spring Boot `@*Mapping`, `@Scheduled`, `@KafkaListener`, `main`               |
+| **C# (.NET)**            | ASP.NET Core `[Http*]`, Minimal API `app.Map*`, `Program.cs`                  |
+| **PHP**                  | Laravel `Route::*`, Symfony `#[Route]`, `ShouldQueue`, `index.php`            |
+| **Swift**                | Vapor `app.get/post`, SwiftUI `@main`, UIKit `viewDidLoad`, `@IBAction`       |
+| **Flutter / Dart**       | `main.dart`, `runApp`, `build`, Shelf `router.*`, `@pragma('vm:entry-point')` |
 
 ---
 
