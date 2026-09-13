@@ -86,8 +86,8 @@ Risk: an attacker modifies `.vscode/.mewra-pounce-cache.json` to cause incorrect
 
 Controls:
 
-- cache is in-memory only in v1; the file path is reserved but not yet written or read;
-- if a file cache is introduced in v2, it must be parsed with a Zod schema, not with bare `JSON.parse`.
+- cache is in-memory only in 0.1.0; the file path is reserved but not yet written or read;
+- if a persistent file cache is introduced in a future release, it must be parsed with a Zod schema, not with bare `JSON.parse`.
 
 ---
 
@@ -101,7 +101,7 @@ Never introduce:
 - unvalidated Webview messages — always use `WebviewMessageSchema.safeParse`;
 - shell commands built from workspace input;
 - `innerHTML` assignment with untrusted content;
-- network calls from the extension host or Webview (v1 is fully local);
+- network calls from the extension host or Webview (0.1.0 is fully local);
 - telemetry or usage analytics.
 
 ---

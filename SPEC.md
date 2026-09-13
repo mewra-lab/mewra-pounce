@@ -189,7 +189,7 @@ interface EntryPointMatch {
 }
 ```
 
-Adapters required for v1:
+Adapters required for 0.1.0:
 
 | Framework                | Detected pattern                                                                                         |
 | ------------------------ | -------------------------------------------------------------------------------------------------------- |

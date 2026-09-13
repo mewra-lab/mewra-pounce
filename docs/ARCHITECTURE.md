@@ -4,7 +4,7 @@
 
 Mewra Pounce must remain:
 
-- deterministic and local-first (no AI, no network calls in v1);
+- deterministic and local-first (no AI, no network calls in 0.1.0);
 - framework-neutral at the core (adapters registered per framework, not spread through logic);
 - safe when handling untrusted Webview messages;
 - fast enough to traverse 1,000+ node graphs in 2–3 seconds;
@@ -111,7 +111,7 @@ Uses a simple `visited: Set<string>` where each entry is `${filePath}:${symbolNa
 
 ## 6. Caching
 
-Entry point cache is in-memory only for v1. The `.vscode/.mewra-pounce-cache.json` path is reserved for a future file-based cache and is already in `.gitignore`.
+Entry point cache is in-memory only for 0.1.0. The `.vscode/.mewra-pounce-cache.json` path is reserved for a future file-based cache and is already in `.gitignore`.
 
 ## 7. Framework adapter pattern
 

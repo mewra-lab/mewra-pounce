@@ -18,7 +18,7 @@ For packaging/release changes, also read `docs/RELEASE.md`.
 
 Mewra Pounce is an open-source VS Code extension that traces the reverse call hierarchy of any function and renders an interactive directed graph, showing every entry point (API routes, workers, cron jobs) that can reach it.
 
-Do **not** implement Go/Python adapters, AI integration, cross-repo tracing, or cloud features — these are v2/v3 roadmap items.
+Do **not** implement AI integration, cross-repo tracing, or cloud features — these are post-0.1.0 roadmap items.
 
 ## Current stack
 

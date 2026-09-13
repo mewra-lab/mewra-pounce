@@ -11,7 +11,7 @@ Mewra Pounce:
 - does **not** require an account;
 - does **not** send telemetry, analytics, or usage data to Mewra or any third party;
 - does **not** upload your source code, file paths, or function names to any server;
-- does **not** make network requests of any kind (v1 is 100% offline);
+- does **not** make network requests of any kind (0.1.0 is 100% offline);
 - does **not** read `.env` files, credentials, or secrets;
 - stores **no** user data beyond the optional workspace cache described below.
 
@@ -32,7 +32,7 @@ This file:
 - is already listed in `.gitignore` — it is not committed to version control;
 - can be deleted at any time with the `Mewra Pounce: Clear Entry Point Cache` command.
 
-> **v1 note:** the file-based cache is not yet written or read. The cache is currently in-memory only and cleared when VS Code is restarted.
+> **0.1.0 note:** the file-based cache is not yet written or read. The cache is currently in-memory only and cleared when VS Code is restarted.
 
 ---
 
