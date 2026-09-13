@@ -12,6 +12,7 @@ Semantic Versioning:
 
 ```text
 0.1.0  — initial release: reverse call trace engine, Cytoscape.js graph, polyglot framework detection, Mermaid export
+0.1.1  — documentation alignment, responsive landing page, marketplace overview sync
 0.2.0  — live file-watcher cache invalidation, keyboard graph navigation, entry-point category filters
 0.3.0  — deep AST pattern matching, export graph as SVG/PNG, Mewra PreFlight integration
 1.0.0  — cross-package monorepo tracing, first stable release

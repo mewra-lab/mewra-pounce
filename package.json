@@ -2,7 +2,7 @@
   "name": "mewra-pounce",
   "displayName": "Mewra Pounce — Reverse Call Trace",
   "description": "Trace callers backward to every entry point that touches a function.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "mewra",
   "license": "MIT",
   "pricing": "Free",

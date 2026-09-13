@@ -203,7 +203,7 @@ pnpm 12.3.4
 
 | Version   | Status      | Scope                                                                                                                                                                                                                        |
 | --------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **0.1.0** | **Current** | Reverse call hierarchy engine via LSP, interactive Cytoscape.js directed graph, polyglot framework entry point detection (TS/JS, Python, Go, Rust, Java, C#, PHP, Swift, Dart), blast radius summary, Mermaid diagram export |
+| **0.1.1** | **Current** | Reverse call hierarchy engine via LSP, interactive Cytoscape.js directed graph, polyglot framework entry point detection (TS/JS, Python, Go, Rust, Java, C#, PHP, Swift, Dart), blast radius summary, Mermaid diagram export |
 | **0.2.0** | Planned     | Active file-watcher cache invalidation, keyboard-first graph navigation (pan/zoom/focus), filter nodes by entry-point type (HTTP route, worker, cron)                                                                        |
 | **0.3.0** | Planned     | Deep AST pattern matching for dynamic dispatch, export graph as SVG/PNG, Mewra PreFlight integration (surface blast radius & affected routes in pre-push checks)                                                             |
 | **1.0.0** | Future      | Cross-package & monorepo workspace tracing, first official stable release                                                                                                                                                    |
