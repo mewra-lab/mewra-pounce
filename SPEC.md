@@ -1,19 +1,19 @@
 # Spec: Mewra Pounce — Reverse Call-Hierarchy Tracer
 
-> Part of the Mewra Ecosystem (alongside `moondi`, `docker`, `mewra` core, `mewra.app`)
+> Open-source reverse call hierarchy extension for VS Code — Part of the Mewra developer tooling ecosystem
 
 ---
 
 ## 0. Naming
 
-| Item                                        | Chosen value                        | Notes                                                                                                                          |
-| ------------------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| **Internal codename**                       | `pounce`                            | Single-word codename matching `moondi`, `docker` — a cat "pouncing" on prey mirrors the idea of tracing back to the root cause |
-| **Product/Service name**                    | **Mewra Pounce**                    | Used in docs, landing page, marketing                                                                                          |
-| **Extension display name (Marketplace)**    | `Mewra Pounce — Reverse Call Trace` | Shown in the VS Code Marketplace                                                                                               |
-| **Extension identifier (`publisher.name`)** | `mewra.pounce`                      | Uses the shared `mewra` publisher account for brand consistency with future extensions                                         |
-| **Repo**                                    | `github.com/mewra/pounce`           | Same org as `moondi`, `docker`, `mewra` core                                                                                   |
-| **Docs subdomain (future)**                 | `pounce.mewra.app`                  | For a standalone landing/docs page if this grows into its own service                                                          |
+| Item                                        | Chosen value                        | Notes                                                                                  |
+| ------------------------------------------- | ----------------------------------- | -------------------------------------------------------------------------------------- |
+| **Internal codename**                       | `pounce`                            | A cat "pouncing" on prey mirrors the idea of tracing back to the root cause            |
+| **Product/Service name**                    | **Mewra Pounce**                    | Used in docs, landing page, marketing                                                  |
+| **Extension display name (Marketplace)**    | `Mewra Pounce — Reverse Call Trace` | Shown in the VS Code Marketplace                                                       |
+| **Extension identifier (`publisher.name`)** | `mewra.mewra-pounce`                | Uses the shared `mewra` publisher account for brand consistency with future extensions |
+| **Repo**                                    | `github.com/mewra-lab/mewra-pounce` | Part of the Mewra developer tooling organization                                       |
+| **Docs subdomain (future)**                 | `pounce.mewra.app`                  | Standalone landing/docs page                                                           |
 
 `package.json`:
 
@@ -34,27 +34,26 @@
 | Problem solved | Developers edit deep logic in a service/helper without knowing which API routes it affects (unclear blast radius), and VS Code's native Call Hierarchy is a text tree you have to expand level by level — no big-picture view.           |
 | Approach       | Use VS Code's built-in LSP Call Hierarchy API (no custom parser needed), do a reverse DFS over incoming calls until hitting a pattern that matches a framework entry point (route/controller/handler), then render an interactive graph. |
 | Tech stack     | TypeScript, VS Code Extension API, `vscode.executePrepareCallHierarchyProvider` / `provideIncomingCalls`, Cytoscape.js (webview), AST fallback via `ts-morph` for pattern matching                                                       |
-| Positioning    | 100% deterministic, no AI dependency, local-first, zero network calls in v1                                                                                                                                                              |
-| v1 scope       | TypeScript/JavaScript (Node.js ecosystem) only — Go/Python/FastAPI deferred to v2                                                                                                                                                        |
+| Positioning    | 100% deterministic, no AI dependency, local-first, zero network calls in 0.1.0                                                                                                                                                           |
+| Polyglot scope | Polyglot support across TS/JS, Python, Go, Rust, Java, C#, PHP, Swift, Dart with framework entry-point matching                                                                                                                          |
 
 ---
 
 ## 2. Goals / Non-Goals
 
-### 2.1 Goals (v1)
+### 2.1 Goals (0.1.0)
 
 - Place the cursor on any function → hit a shortcut → see a graph of every path that leads to that function, traced all the way back to an entry point
-- Auto-detect entry points for Express, Fastify, NestJS, Next.js (App Router + Pages Router API routes)
+- Auto-detect entry points for Express, Fastify, NestJS, Next.js, FastAPI, Flask, Django, Gin, Echo, Chi, Spring Boot, Laravel, ASP.NET Core, etc.
 - Show a clear numeric Blast Radius summary (how many routes, how many workers)
 - Export the graph as Mermaid markdown, ready to paste into a PR description
 - Fast enough to traverse graphs with 1,000+ nodes in 2–3 seconds
 
-### 2.2 Non-Goals (v1)
+### 2.2 Non-Goals (0.1.0)
 
-- No cross-repo tracing (single workspace only)
+- No cross-repo tracing in 0.1.0 (single workspace only; monorepo package tracing planned for 1.0.0)
 - No resolution of dynamic/reflection-based dispatch (e.g. string-based DI lookups) — these are marked "unresolved" rather than guessed
 - No AI integration in this architecture (may become an optional plugin later, not part of the core)
-- No Go/Python support in v1 (v2 roadmap item)
 
 ---
 
@@ -266,13 +265,12 @@ Export logic: convert `CallNode[]`/`CallEdge[]` directly into Mermaid syntax via
 
 ## 9. Roadmap
 
-| Version              | Scope                                                                                             |
-| -------------------- | ------------------------------------------------------------------------------------------------- |
-| **v1 (MVP)**         | TypeScript/JavaScript + Express/Fastify/NestJS/Next.js, Mermaid export, webview graph             |
-| **v1.1**             | Smarter cache invalidation, keyboard-only graph navigation (no mouse required)                    |
-| **v2**               | Go (Gin/Echo) and Python (FastAPI/Flask) support                                                  |
-| **v2.1**             | Integration with other Mewra core services (e.g. `moondi`, if relevant for tracing/observability) |
-| **v3 (considering)** | Cross-repo tracing for monorepos with separate packages                                           |
+| Version   | Status      | Scope                                                                                                                                                            |
+| --------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **0.1.0** | **Current** | Reverse call hierarchy engine via LSP, interactive Cytoscape.js directed graph, polyglot framework entry points (TS/JS, Python, Go, etc.), Mermaid export        |
+| **0.2.0** | Planned     | Active file-watcher cache invalidation, keyboard-first graph navigation (pan/zoom/focus), filter nodes by entry-point type                                       |
+| **0.3.0** | Planned     | Deep AST pattern matching for dynamic dispatch, export graph as SVG/PNG, Mewra PreFlight integration (surface blast radius & affected routes in pre-push checks) |
+| **1.0.0** | Future      | Cross-package & monorepo workspace tracing, production-stable release                                                                                            |
 
 ---
 

@@ -11,12 +11,10 @@
 Semantic Versioning:
 
 ```text
-0.1.0  — scaffold / internal alpha
-0.2.0  — traversal + graph rendering alpha
-0.3.0  — all four framework adapters + Mermaid export
-0.4.0  — cache + performance polish
-0.5.0  — public beta
-1.0.0  — first stable release
+0.1.0  — initial release: reverse call trace engine, Cytoscape.js graph, polyglot framework detection, Mermaid export
+0.2.0  — live file-watcher cache invalidation, keyboard graph navigation, entry-point category filters
+0.3.0  — deep AST pattern matching, export graph as SVG/PNG, Mewra PreFlight integration
+1.0.0  — cross-package monorepo tracing, first stable release
 ```
 
 ## 3. Pre-release checks
