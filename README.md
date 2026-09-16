@@ -15,6 +15,12 @@
 
 Mewra Pounce is an open-source VS Code extension that walks the reverse call hierarchy of any function and renders an interactive directed graph, highlighting every API route, background worker, and cron job that can reach it.
 
+## Mewra PreFlight companion
+
+Install **Mewra PreFlight** alongside Pounce. On activation, Pounce registers its diff-scoped **Blast Radius** check with PreFlight. When a supported route declaration changes, the PreFlight dashboard shows affected entry points and includes Mermaid route summaries in the generated PR/MR description.
+
+This companion check inspects only the Git diff; it does not run the editor's Call Hierarchy provider. Use **Mewra Pounce: Trace Callers** for the interactive, function-level reverse call graph.
+
 Website: [pounce.mewra.app](https://pounce.mewra.app) · Part of the [Mewra](https://github.com/mewra-lab) developer tooling ecosystem.  
 Source code: [github.com/mewra-lab/mewra-pounce](https://github.com/mewra-lab/mewra-pounce)
 

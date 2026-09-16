@@ -48,7 +48,11 @@ If no call hierarchy item is found at cursor or the LSP fails: centered warning 
 | `mewra-pounce.exportMermaid`   | Copy Graph as Mermaid      | Webview button only |
 | `mewra-pounce.clearCache`      | Clear Entry Point Cache    | —                   |
 
-## 8. Settings
+## 8. PreFlight companion row
+
+When Mewra PreFlight is installed, Pounce contributes a **Mewra Pounce — Blast Radius** dashboard row. It reports changed supported route declarations as route chips and findings. It is informational (`warning`) and can be disabled or have its severity overridden with `contributedChecks.pounce:blast-radius` in `.mewra-preflight.json`.
+
+## 9. Settings
 
 | Key                                  | Default  | Description                          |
 | ------------------------------------ | -------- | ------------------------------------ |
@@ -57,7 +61,7 @@ If no call hierarchy item is found at cursor or the LSP fails: centered warning 
 | `mewraPounce.frameworks`             | all four | Frameworks to detect as entry points |
 | `mewraPounce.cacheEntryPoints`       | `true`   | Cache detected entry points          |
 
-## 9. Design principles
+## 10. Design principles
 
 - Uses VS Code theme CSS variables exclusively — no hardcoded colors in structure.
 - Must remain usable in narrow editor groups (sidebar-width panels).

@@ -265,12 +265,12 @@ Export logic: convert `CallNode[]`/`CallEdge[]` directly into Mermaid syntax via
 
 ## 9. Roadmap
 
-| Version   | Status      | Scope                                                                                                                                                            |
-| --------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **0.1.0** | **Current** | Reverse call hierarchy engine via LSP, interactive Cytoscape.js directed graph, polyglot framework entry points (TS/JS, Python, Go, etc.), Mermaid export        |
-| **0.2.0** | Planned     | Active file-watcher cache invalidation, keyboard-first graph navigation (pan/zoom/focus), filter nodes by entry-point type                                       |
-| **0.3.0** | Planned     | Deep AST pattern matching for dynamic dispatch, export graph as SVG/PNG, Mewra PreFlight integration (surface blast radius & affected routes in pre-push checks) |
-| **1.0.0** | Future      | Cross-package & monorepo workspace tracing, production-stable release                                                                                            |
+| Version   | Status      | Scope                                                                                                                                                                           |
+| --------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **0.1.0** | **Current** | Reverse call hierarchy engine via LSP, interactive Cytoscape.js directed graph, polyglot framework entry points (TS/JS, Python, Go, etc.), Mermaid export                       |
+| **0.2.0** | Planned     | Active file-watcher cache invalidation, keyboard-first graph navigation (pan/zoom/focus), filter nodes by entry-point type                                                      |
+| **0.3.0** | Current     | Mewra PreFlight integration: diff-scoped changed-route detection contributes blast-radius findings and Mermaid PR/MR summaries; interactive tracing remains local to the editor |
+| **1.0.0** | Future      | Cross-package & monorepo workspace tracing, production-stable release                                                                                                           |
 
 ---
 
