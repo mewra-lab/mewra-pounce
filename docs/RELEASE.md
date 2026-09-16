@@ -54,3 +54,23 @@ The VSIX must **not** include:
 pnpm install --frozen-lockfile
 pnpm validate
 ```
+
+## 6. Automated GitHub Release
+
+`.github/workflows/release.yml` runs on a `vMAJOR.MINOR.PATCH` tag or manually
+with `workflow_dispatch`. It verifies that the tag matches `package.json`, runs
+the full quality gate, packages the VSIX, and publishes the VSIX plus
+`SHA256SUMS.txt` to the GitHub Release.
+
+Create a release only after its pull request is merged into `main`:
+
+```bash
+git checkout main
+git pull --ff-only origin main
+git tag -a vX.Y.Z -m "vX.Y.Z"
+git push origin vX.Y.Z
+```
+
+The `v0.3.0` tag was originally pushed before this workflow existed. After this
+workflow is merged, that tag is recreated at the workflow commit so the first
+automated release can be built from its tagged source.
