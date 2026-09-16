@@ -20,6 +20,7 @@ VS Code Workbench
 ├── Extension Host (TypeScript)
 │   ├── extension.ts               — activation, command registration
 │   ├── PouncePanel                — WebviewPanel lifecycle + message bridge
+│   ├── PreFlight registration     — registers the diff-scoped Blast Radius check
 │   │
 │   ├── Core
 │   │   ├── TraceOrchestrator      — DFS traversal, cycle detection, depth limit
@@ -35,6 +36,12 @@ VS Code Workbench
     ├── GraphView                  — Cytoscape.js renderer
     └── styles.css                 — VS Code theme variable tokens
 ```
+
+## 3.1 PreFlight companion boundary
+
+Pounce declares Mewra PreFlight as an extension dependency and validates its versioned API at activation. It contributes `pounce:blast-radius` through `registerCheck()` and owns the diff-only route declaration scanner under `src/core/preflight/`.
+
+The companion check deliberately does not invoke Call Hierarchy or inspect the active editor. That keeps PreFlight runs deterministic, fast, and suitable for staged or branch diffs. Interactive reverse tracing remains owned by `TraceOrchestrator`.
 
 ## 3. Repository structure
 

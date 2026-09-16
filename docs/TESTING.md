@@ -22,6 +22,7 @@ Pure modules testable without VS Code:
 - `match-entry-point.ts` — adapter dispatch, framework filtering;
 - framework adapters — per-framework pattern matching;
 - `messages.ts` — Zod schema validation for both directions.
+- `core/preflight/` — diff-scoped route detection and the contributed Blast Radius check.
 
 ### Extension tests (@vscode/test-electron)
 
@@ -44,6 +45,7 @@ Manual checklist:
 - [ ] `Alt+Shift+T` toggles test files from the editor
 - [ ] Tracing a function with no callers shows an empty graph gracefully
 - [ ] Tracing a function in a non-TS file shows an appropriate error
+- [ ] With Mewra PreFlight installed, run its pipeline on a changed route and confirm the Pounce Blast Radius row appears
 
 ## 3. Running tests
 
