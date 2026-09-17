@@ -62,6 +62,11 @@ with `workflow_dispatch`. It verifies that the tag matches `package.json`, runs
 the full quality gate, packages the VSIX, and publishes the VSIX plus
 `SHA256SUMS.txt` to the GitHub Release.
 
+`pnpm package` writes local package output to `artifacts/`. The directory is
+tracked only with a placeholder; VSIX files and checksums are ignored and the
+directory is excluded from the extension package. GitHub Releases remain the
+distributable archive of record.
+
 Create a release only after its pull request is merged into `main`:
 
 ```bash
